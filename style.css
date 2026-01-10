@@ -179,6 +179,20 @@ body.dark-theme .partnership-form textarea {
     background-color: #45a049;
 }
 
+#disqus_section {
+    margin-top: 5rem;
+    padding: 2rem;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+body.dark-theme #disqus_section {
+    background: #444;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
 /* Mobile Responsiveness */
 @media (max-width: 600px) {
     h1 {
