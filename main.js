@@ -29,8 +29,17 @@ const getRandomColor = () => {
     return color;
 };
 
+const updateButtonText = () => {
+    if (document.body.classList.contains('dark-theme')) {
+        themeToggleBtn.textContent = 'Light Theme';
+    } else {
+        themeToggleBtn.textContent = 'Dark Theme';
+    }
+};
+
 const toggleTheme = () => {
     document.body.classList.toggle('dark-theme');
+    updateButtonText();
     if (document.body.classList.contains('dark-theme')) {
         localStorage.setItem('theme', 'dark');
     } else {
@@ -43,6 +52,7 @@ const savedTheme = localStorage.getItem('theme');
 if (savedTheme === 'dark') {
     document.body.classList.add('dark-theme');
 }
+updateButtonText();
 
 generateBtn.addEventListener('click', generateNumbers);
 themeToggleBtn.addEventListener('click', toggleTheme);
