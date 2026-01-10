@@ -1,35 +1,106 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lotto Number Generator</title>
+    <title>AI Playground & Tools - Lotto Generator & AI Games</title>
+    <meta name="description" content="Explore AI-powered tools and fun games. Generate lucky lotto numbers and challenge our AI in Rock Paper Scissors. Experience the future of web apps.">
     <link rel="stylesheet" href="style.css">
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6263172518351849"
-     crossorigin="anonymous"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6263172518351849" crossorigin="anonymous"></script>
     <meta name="google-adsense-account" content="ca-pub-6263172518351849">
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <div class="container">
-        <button id="theme-toggle-btn">Toggle Theme</button>
-        <h1>Lotto Number Generator</h1>
-        <div id="lotto-container"></div>
-        <button id="generate-btn">Generate Numbers</button>
-
-        <div id="rps-game-section">
-            <h2>Rock Paper Scissors AI Challenge</h2>
-            <div id="webcam-container"></div>
-            <div id="label-container"></div>
-            <div id="rps-result">Press "Start Game" to begin!</div>
-            <button id="start-game-btn">Start Game</button>
-            <button id="play-rps-btn" style="display:none;">Shoot!</button>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <i class="fas fa-robot"></i> AI Playground
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#hero">Home</a></li>
+                    <li><a href="#lotto-section">Lotto</a></li>
+                    <li><a href="#rps-game-section">AI Game</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+            <button id="theme-toggle-btn">Toggle Theme</button>
         </div>
+    </header>
 
-        <div class="partnership-form">
+    <main class="container">
+        
+        <section id="hero">
+            <h1>Welcome to the AI Playground</h1>
+            <p class="intro-text">
+                Discover the intersection of utility and artificial intelligence. 
+                Our platform offers simple yet powerful tools designed to demonstrate the capabilities of modern web technologies.
+                Whether you're looking for a bit of luck or want to test your skills against a computer vision model, you've come to the right place.
+            </p>
+        </section>
+
+        <hr class="divider">
+
+        <section id="lotto-section" class="feature-section">
+            <div class="content-wrapper">
+                <div class="text-content">
+                    <h2><i class="fas fa-ticket-alt"></i> Lucky Lotto Generator</h2>
+                    <p>
+                        Generating random numbers for your lottery ticket has never been easier. 
+                        Our algorithm ensures true randomness, giving you a fair set of numbers every time.
+                        Click the button below to generate your potential winning combination.
+                        This tool mimics the standard 6/45 format used in many popular lotteries.
+                    </p>
+                    <h3>How it Works</h3>
+                    <p>
+                        We use a cryptographically strong pseudo-random number generator to pick unique numbers from 1 to 45.
+                        Each ball is color-coded to match traditional lottery aesthetics.
+                    </p>
+                </div>
+                <div class="tool-content">
+                    <div id="lotto-container"></div>
+                    <button id="generate-btn">Generate Numbers</button>
+                </div>
+            </div>
+        </section>
+
+        <hr class="divider">
+
+        <section id="rps-game-section" class="feature-section">
+            <div class="content-wrapper">
+                <div class="text-content">
+                    <h2><i class="fas fa-hand-scissors"></i> Rock Paper Scissors AI Challenge</h2>
+                    <p>
+                        Challenge our AI in a classic game of Rock, Paper, Scissors. 
+                        This isn't just a random number game; it uses <strong>Computer Vision</strong> via your webcam to recognize your hand gestures in real-time!
+                        Powered by TensorFlow.js and Google's Teachable Machine, this demo showcases how AI can run directly in your browser.
+                    </p>
+                    <h3>Instructions</h3>
+                    <ul class="instructions-list">
+                        <li>Click <strong>"Start Game"</strong> to enable your webcam.</li>
+                        <li>Show your hand (Rock, Paper, or Scissors) to the camera.</li>
+                        <li>Click <strong>"Shoot!"</strong> to lock in your move.</li>
+                        <li>See if you can beat the computer!</li>
+                    </ul>
+                </div>
+                <div class="tool-content game-container">
+                    <div id="webcam-container"></div>
+                    <div id="label-container"></div>
+                    <div id="rps-result">Press "Start Game" to begin!</div>
+                    <button id="start-game-btn">Start Game</button>
+                    <button id="play-rps-btn" style="display:none;">Shoot!</button>
+                </div>
+            </div>
+        </section>
+
+        <hr class="divider">
+
+        <section id="contact" class="partnership-form">
             <h2>Partnership Inquiry</h2>
+            <p class="form-intro">Interested in collaborating or integrating our AI tools? Send us a message.</p>
             <form action="https://formspree.io/f/xlggrpwn" method="POST">
                 <div class="form-group">
                     <input type="text" name="name" placeholder="Your Name" required>
@@ -45,9 +116,10 @@
                 </div>
                 <button type="submit" id="submit-btn">Send Message</button>
             </form>
-        </div>
+        </section>
 
-        <div id="disqus_section">
+        <section id="disqus_section">
+            <h3>Community Discussion</h3>
             <div id="disqus_thread"></div>
             <script>
                 /**
@@ -67,8 +139,20 @@
                 })();
             </script>
             <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2024 AI Playground. All rights reserved.</p>
+            <nav class="footer-nav">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">About Us</a>
+            </nav>
         </div>
-    </div>
+    </footer>
+
     <script src="main.js"></script>
 </body>
 </html>

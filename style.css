@@ -1,50 +1,91 @@
-
+/* Global Styles */
 body {
-    font-family: sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background-color: #f0f0f0;
-    background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%239C92AC' fill-opacity='0.1'%3E%3Cpath d='M5 0h1L0 6V5zM6 5v1H0V5z'/%3E%3C/g%3E%3C/svg%3E");
-    transition: background-color 0.3s, color 0.3s;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
-    padding: 1rem;
-    box-sizing: border-box;
+    padding: 0;
+    min-height: 100vh;
+    background-color: #f8f9fa;
+    color: #333;
+    transition: background-color 0.3s, color 0.3s;
+    line-height: 1.6;
 }
 
 body.dark-theme {
-    background-color: #333;
-    color: #f0f0f0;
+    background-color: #1a1a1a;
+    color: #e0e0e0;
 }
 
-.container {
-    text-align: center;
-    position: relative;
-    width: 100%;
-    max-width: 800px;
+/* Header & Nav */
+header {
+    background-color: #fff;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    padding: 0.5rem 0;
 }
 
-#theme-toggle-btn {
-    position: absolute;
-    top: -3rem; /* Move above h1 */
-    right: 0;
-    padding: 0.6rem 1.2rem;
-    font-size: 0.9rem;
+body.dark-theme header {
+    background-color: #2d2d2d;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+.header-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.5rem;
     font-weight: bold;
-    color: white;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border: none;
-    border-radius: 25px;
-    cursor: pointer;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    transition: transform 0.2s, box-shadow 0.2s;
-    z-index: 10;
+    color: #4CAF50;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
-#theme-toggle-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem;
+    margin: 0;
+    padding: 0;
+}
+
+nav a {
+    text-decoration: none;
+    color: #555;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+nav a:hover {
+    color: #4CAF50;
+}
+
+body.dark-theme nav a {
+    color: #bbb;
+}
+
+body.dark-theme nav a:hover {
+    color: #4CAF50;
+}
+
+/* Theme Button in Header */
+#theme-toggle-btn {
+    position: static; /* Reset absolute positioning */
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
 body.dark-theme #theme-toggle-btn {
@@ -52,17 +93,95 @@ body.dark-theme #theme-toggle-btn {
     color: #333;
 }
 
-h1 {
-    font-size: 3rem;
-    color: #333;
-    margin-bottom: 2rem;
-    margin-top: 1rem;
+#theme-toggle-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
-body.dark-theme h1 {
+/* Main Container */
+.container {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+/* Hero Section */
+#hero {
+    text-align: center;
+    padding: 3rem 1rem;
+}
+
+#hero h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: #2c3e50;
+}
+
+body.dark-theme #hero h1 {
+    color: #ecf0f1;
+}
+
+.intro-text {
+    font-size: 1.1rem;
+    max-width: 700px;
+    margin: 0 auto;
+    color: #666;
+}
+
+body.dark-theme .intro-text {
+    color: #aaa;
+}
+
+/* Sections & Dividers */
+.feature-section {
+    padding: 3rem 0;
+}
+
+.divider {
+    border: 0;
+    height: 1px;
+    background: #e0e0e0;
+    margin: 0;
+}
+
+body.dark-theme .divider {
+    background: #444;
+}
+
+.content-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    text-align: center;
+}
+
+.text-content {
+    max-width: 700px;
+}
+
+.text-content h2 {
+    color: #333;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+body.dark-theme .text-content h2 {
     color: #f0f0f0;
 }
 
+.text-content p {
+    margin-bottom: 1rem;
+}
+
+.tool-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Lotto Styles */
 #lotto-container {
     display: flex;
     justify-content: center;
@@ -84,212 +203,216 @@ body.dark-theme h1 {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 0 6px 20px rgba(0, 0, 0, 0.19);
 }
 
-#generate-btn {
-    padding: 1rem 2rem;
-    font-size: 1.2rem;
+/* Buttons */
+button {
+    font-family: inherit;
+}
+
+#generate-btn, #start-game-btn, #play-rps-btn, #submit-btn {
+    padding: 0.8rem 1.5rem;
+    font-size: 1.1rem;
     color: white;
-    background-color: #4CAF50;
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 0 0 20px rgba(76, 175, 80, 0.6);
     transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
+#generate-btn {
+    background-color: #4CAF50;
+}
 #generate-btn:hover {
     background-color: #45a049;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3), 0 0 30px rgba(76, 175, 80, 0.8);
+    transform: translateY(-2px);
 }
 
-.partnership-form {
-    margin-top: 4rem;
-    padding: 2rem;
+#start-game-btn, #play-rps-btn {
+    background-color: #2196F3;
+    margin: 0.5rem;
+}
+#start-game-btn:hover, #play-rps-btn:hover {
+    background-color: #1976D2;
+    transform: translateY(-2px);
+}
+
+#submit-btn {
+    background-color: #FF5722;
+    width: 100%;
+}
+#submit-btn:hover {
+    background-color: #E64A19;
+}
+
+/* RPS Game Styles */
+#rps-game-section {
+    background-color: transparent;
+    box-shadow: none;
+}
+
+.game-container {
     background: white;
+    padding: 2rem;
     border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s, box-shadow 0.3s;
-    text-align: left;
-    max-width: 500px;
-    margin-left: auto;
-    margin-right: auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
 }
 
-body.dark-theme .partnership-form {
-    background: #444;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+body.dark-theme .game-container {
+    background: #2d2d2d;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
-.partnership-form h2 {
-    text-align: center;
-    margin-bottom: 1.5rem;
+#webcam-container {
+    margin-bottom: 1rem;
+    border-radius: 10px;
+    overflow: hidden;
+    display: inline-block;
+}
+
+#webcam-container canvas {
+    display: block;
+}
+
+#rps-result {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin: 1rem 0;
+    min-height: 3rem;
     color: #333;
 }
 
-body.dark-theme .partnership-form h2 {
-    color: #f0f0f0;
+body.dark-theme #rps-result {
+    color: #fff;
+}
+
+.instructions-list {
+    text-align: left;
+    display: inline-block;
+    color: #666;
+}
+
+body.dark-theme .instructions-list {
+    color: #bbb;
+}
+
+/* Form Styles */
+.partnership-form {
+    background: white;
+    padding: 3rem 2rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+body.dark-theme .partnership-form {
+    background: #2d2d2d;
+}
+
+.form-intro {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #666;
+}
+
+body.dark-theme .form-intro {
+    color: #aaa;
 }
 
 .form-group {
     margin-bottom: 1rem;
 }
 
-.partnership-form input, 
-.partnership-form textarea {
+input, textarea {
     width: 100%;
     padding: 0.8rem;
     border: 1px solid #ddd;
-    border-radius: 8px;
+    border-radius: 6px;
     font-size: 1rem;
     box-sizing: border-box;
-    transition: border-color 0.3s;
+    font-family: inherit;
 }
 
-body.dark-theme .partnership-form input,
-body.dark-theme .partnership-form textarea {
-    background: #555;
-    border-color: #666;
+body.dark-theme input, body.dark-theme textarea {
+    background: #444;
+    border-color: #555;
     color: white;
 }
 
-.partnership-form textarea {
-    height: 100px;
-    resize: vertical;
-}
-
-.partnership-form input:focus, 
-.partnership-form textarea:focus {
+input:focus, textarea:focus {
     outline: none;
     border-color: #4CAF50;
 }
 
-#submit-btn {
-    width: 100%;
-    padding: 1rem;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 1.1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s;
+textarea {
+    resize: vertical;
+    min-height: 100px;
 }
 
-#submit-btn:hover {
-    background-color: #45a049;
-}
-
+/* Disqus */
 #disqus_section {
-    margin-top: 5rem;
-    padding: 2rem;
+    margin-top: 3rem;
     background: white;
+    padding: 2rem;
     border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s, box-shadow 0.3s;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
 }
 
 body.dark-theme #disqus_section {
-    background: #444;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    background: #2d2d2d;
 }
 
-/* RPS Game Section */
-#rps-game-section {
+/* Footer */
+footer {
+    background-color: #fff;
+    padding: 2rem 0;
     margin-top: 4rem;
-    padding: 2rem;
-    background: white;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s, box-shadow 0.3s;
+    border-top: 1px solid #eee;
     text-align: center;
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
 }
 
-body.dark-theme #rps-game-section {
-    background: #444;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+body.dark-theme footer {
+    background-color: #2d2d2d;
+    border-top: 1px solid #444;
 }
 
-#rps-game-section h2 {
-    color: #333;
-    margin-bottom: 1.5rem;
-}
-
-body.dark-theme #rps-game-section h2 {
-    color: #f0f0f0;
-}
-
-#webcam-container {
+.footer-content p {
+    color: #888;
     margin-bottom: 1rem;
-    display: flex;
-    justify-content: center;
-    overflow: hidden;
-    border-radius: 10px;
 }
 
-#webcam-container canvas {
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+.footer-nav a {
+    color: #666;
+    text-decoration: none;
+    margin: 0 0.5rem;
+    font-size: 0.9rem;
 }
 
-#rps-result {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin: 1rem 0;
-    color: #333;
-    min-height: 2.5rem;
+.footer-nav a:hover {
+    color: #4CAF50;
+    text-decoration: underline;
 }
 
-body.dark-theme #rps-result {
-    color: #f0f0f0;
+body.dark-theme .footer-nav a {
+    color: #aaa;
 }
 
-#start-game-btn, #play-rps-btn {
-    padding: 1rem 2rem;
-    font-size: 1.2rem;
-    color: white;
-    background-color: #2196F3; /* Blue */
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transition: all 0.3s ease;
-    margin: 0.5rem;
-}
-
-#start-game-btn:hover, #play-rps-btn:hover {
-    background-color: #1976D2;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-}
-
-#label-container {
-    display: none; /* Hide raw labels, show result only */
-}
-
-/* Mobile Responsiveness */
-@media (max-width: 600px) {
-    h1 {
-        font-size: 2rem;
-        margin-top: 3rem; /* Space for the button */
-    }
-
-    #theme-toggle-btn {
-        top: 0;
-        right: 50%;
-        transform: translateX(50%); /* Center the button on very small screens or keep right? Let's keep right but ensure space */
-        transform: none;
-        right: 0;
-    }
-
-    .lotto-ball {
-        width: 45px;
-        height: 45px;
-        font-size: 1.2rem;
+/* Responsive */
+@media (max-width: 768px) {
+    .header-container {
+        flex-direction: column;
+        gap: 1rem;
     }
     
-    #lotto-container {
-        gap: 0.5rem;
+    nav ul {
+        gap: 1rem;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+    
+    .text-content h2 {
+        font-size: 1.75rem;
     }
 }
