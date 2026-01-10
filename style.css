@@ -101,6 +101,84 @@ body.dark-theme h1 {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3), 0 0 30px rgba(76, 175, 80, 0.8);
 }
 
+.partnership-form {
+    margin-top: 4rem;
+    padding: 2rem;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, box-shadow 0.3s;
+    text-align: left;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+body.dark-theme .partnership-form {
+    background: #444;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.partnership-form h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #333;
+}
+
+body.dark-theme .partnership-form h2 {
+    color: #f0f0f0;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.partnership-form input, 
+.partnership-form textarea {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+
+body.dark-theme .partnership-form input,
+body.dark-theme .partnership-form textarea {
+    background: #555;
+    border-color: #666;
+    color: white;
+}
+
+.partnership-form textarea {
+    height: 100px;
+    resize: vertical;
+}
+
+.partnership-form input:focus, 
+.partnership-form textarea:focus {
+    outline: none;
+    border-color: #4CAF50;
+}
+
+#submit-btn {
+    width: 100%;
+    padding: 1rem;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#submit-btn:hover {
+    background-color: #45a049;
+}
+
 /* Mobile Responsiveness */
 @media (max-width: 600px) {
     h1 {
