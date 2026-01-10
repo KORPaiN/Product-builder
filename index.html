@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lotto Number Generator</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -13,6 +15,15 @@
         <h1>Lotto Number Generator</h1>
         <div id="lotto-container"></div>
         <button id="generate-btn">Generate Numbers</button>
+
+        <div id="rps-game-section">
+            <h2>Rock Paper Scissors AI Challenge</h2>
+            <div id="webcam-container"></div>
+            <div id="label-container"></div>
+            <div id="rps-result">Press "Start Game" to begin!</div>
+            <button id="start-game-btn">Start Game</button>
+            <button id="play-rps-btn" style="display:none;">Shoot!</button>
+        </div>
 
         <div class="partnership-form">
             <h2>Partnership Inquiry</h2>

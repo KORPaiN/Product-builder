@@ -60,3 +60,99 @@ themeToggleBtn.addEventListener('click', toggleTheme);
 
 // Initial generation
 generateNumbers();
+
+
+// --- Rock Paper Scissors AI ---
+const URL_RPS = "https://teachablemachine.withgoogle.com/models/-lscwrHBg/";
+let model, webcam, labelContainer, maxPredictions;
+let isGameRunning = false;
+
+const startGameBtn = document.getElementById('start-game-btn');
+const playRpsBtn = document.getElementById('play-rps-btn');
+const rpsResult = document.getElementById('rps-result');
+
+async function initRPS() {
+    if(isGameRunning) return;
+    
+    startGameBtn.disabled = true;
+    rpsResult.innerText = "Loading model...";
+    
+    const modelURL = URL_RPS + "model.json";
+    const metadataURL = URL_RPS + "metadata.json";
+
+    try {
+        model = await tmImage.load(modelURL, metadataURL);
+        maxPredictions = model.getTotalClasses();
+
+        const flip = true; 
+        webcam = new tmImage.Webcam(200, 200, flip); 
+        await webcam.setup(); 
+        await webcam.play();
+        window.requestAnimationFrame(loop);
+
+        document.getElementById("webcam-container").appendChild(webcam.canvas);
+        
+        isGameRunning = true;
+        startGameBtn.style.display = 'none';
+        playRpsBtn.style.display = 'inline-block';
+        rpsResult.innerText = "Show your hand and press 'Shoot!'";
+    } catch (error) {
+        console.error(error);
+        rpsResult.innerText = "Error loading model. Check console.";
+        startGameBtn.disabled = false;
+    }
+}
+
+async function loop() {
+    webcam.update(); 
+    window.requestAnimationFrame(loop);
+}
+
+// Map Korean labels to English for comparison
+const labelMap = {
+    "주먹": "Rock",
+    "가위": "Scissors",
+    "보": "Paper"
+};
+
+async function handlePlayRPS() {
+    if(!isGameRunning) return;
+
+    // Predict
+    const prediction = await model.predict(webcam.canvas);
+    let highestProb = 0;
+    let userChoiceKor = "";
+    
+    for (let i = 0; i < maxPredictions; i++) {
+        if (prediction[i].probability > highestProb) {
+            highestProb = prediction[i].probability;
+            userChoiceKor = prediction[i].className;
+        }
+    }
+    
+    const userChoice = labelMap[userChoiceKor] || userChoiceKor; 
+    
+    // Simple Computer Logic (Random)
+    const comChoices = ["Rock", "Paper", "Scissors"];
+    const comChoice = comChoices[Math.floor(Math.random() * 3)];
+    
+    let resultMsg = "";
+    
+    // Game Logic
+    if (userChoice === comChoice) {
+        resultMsg = "It's a Tie!";
+    } else if (
+        (userChoice === "Rock" && comChoice === "Scissors") ||
+        (userChoice === "Scissors" && comChoice === "Paper") ||
+        (userChoice === "Paper" && comChoice === "Rock")
+    ) {
+        resultMsg = "You Win! 🎉";
+    } else {
+        resultMsg = "You Lose! 🤖";
+    }
+    
+    rpsResult.innerHTML = `You: ${userChoice} <br> Com: ${comChoice} <br> <strong>${resultMsg}</strong>`;
+}
+
+startGameBtn.addEventListener('click', initRPS);
+playRpsBtn.addEventListener('click', handlePlayRPS);
