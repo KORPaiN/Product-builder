@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+   <url>
+      <loc>https://korpain.github.io/Product-builder/index.html</loc>
+      <lastmod>2024-02-11</lastmod>
+      <changefreq>weekly</changefreq>
+      <priority>1.0</priority>
+   </url>
+   <url>
+      <loc>https://korpain.github.io/Product-builder/lotto.html</loc>
+      <lastmod>2024-02-11</lastmod>
+      <changefreq>weekly</changefreq>
+      <priority>0.8</priority>
+   </url>
+   <url>
+      <loc>https://korpain.github.io/Product-builder/rps-game.html</loc>
+      <lastmod>2024-02-11</lastmod>
+      <changefreq>weekly</changefreq>
+      <priority>0.8</priority>
+   </url>
+   <url>
+      <loc>https://korpain.github.io/Product-builder/contact.html</loc>
+      <lastmod>2024-02-11</lastmod>
+      <changefreq>monthly</changefreq>
+      <priority>0.5</priority>
+   </url>
+</urlset>
