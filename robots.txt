@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://korpain.github.io/Product-builder/sitemap.xml
+Sitemap: https://product-builder-dte.pages.dev/sitemap.xml
