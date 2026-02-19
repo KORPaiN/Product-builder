@@ -312,6 +312,81 @@ body.dark-theme .game-container {
     display: block;
 }
 
+/* Memory Game Styles */
+.memory-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin: 20px 0;
+    perspective: 1000px;
+}
+
+.memory-card {
+    width: 80px;
+    height: 80px;
+    background-color: #2196F3;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    color: white;
+    transform-style: preserve-3d;
+    transition: transform 0.5s;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.memory-card.flipped {
+    transform: rotateY(180deg);
+    background-color: #fff;
+    color: #333;
+}
+
+body.dark-theme .memory-card.flipped {
+    background-color: #444;
+    color: #fff;
+}
+
+.memory-card i {
+    display: none;
+    transform: rotateY(180deg);
+}
+
+.memory-card.flipped i {
+    display: block;
+}
+
+.memory-card.matched {
+    background-color: #4CAF50;
+    cursor: default;
+}
+
+#memory-stats {
+    display: flex;
+    gap: 2rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+#reset-memory-btn {
+    background-color: #f44336;
+    padding: 0.8rem 1.5rem;
+    font-size: 1.1rem;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+#reset-memory-btn:hover {
+    background-color: #d32f2f;
+    transform: translateY(-2px);
+}
+
 #rps-result {
     font-size: 1.25rem;
     font-weight: bold;

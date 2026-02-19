@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initTheme();
     initLotto();
     initRPS();
+    initMemoryGame();
 });
 
 function initTheme() {
@@ -170,4 +171,111 @@ function initRPS() {
 
     startGameBtn.addEventListener('click', startRPS);
     playRpsBtn.addEventListener('click', handlePlay);
+}
+
+function initMemoryGame() {
+    const memoryGrid = document.getElementById('memory-grid');
+    const moveCountDisplay = document.getElementById('move-count');
+    const matchCountDisplay = document.getElementById('match-count');
+    const resetBtn = document.getElementById('reset-memory-btn');
+
+    if (!memoryGrid || !moveCountDisplay || !matchCountDisplay || !resetBtn) return;
+
+    const icons = [
+        'fa-robot', 'fa-brain', 'fa-microchip', 'fa-network-wired',
+        'fa-code', 'fa-database', 'fa-laptop-code', 'fa-server'
+    ];
+    
+    // Create pairs and shuffle
+    let cardIcons = [...icons, ...icons];
+    let moves = 0;
+    let matches = 0;
+    let flippedCards = [];
+    let lockBoard = false;
+
+    function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    function createBoard() {
+        memoryGrid.innerHTML = '';
+        cardIcons = shuffle(cardIcons);
+        cardIcons.forEach((iconClass, index) => {
+            const card = document.createElement('div');
+            card.classList.add('memory-card');
+            card.dataset.icon = iconClass;
+            card.innerHTML = `<i class="fas ${iconClass}"></i>`;
+            card.addEventListener('click', flipCard);
+            memoryGrid.appendChild(card);
+        });
+        
+        moves = 0;
+        matches = 0;
+        moveCountDisplay.textContent = moves;
+        matchCountDisplay.textContent = matches;
+        flippedCards = [];
+        lockBoard = false;
+    }
+
+    function flipCard() {
+        if (lockBoard) return;
+        if (this === flippedCards[0]) return;
+        if (this.classList.contains('matched')) return;
+
+        this.classList.add('flipped');
+        flippedCards.push(this);
+
+        if (flippedCards.length === 2) {
+            moves++;
+            moveCountDisplay.textContent = moves;
+            checkForMatch();
+        }
+    }
+
+    function checkForMatch() {
+        const [card1, card2] = flippedCards;
+        const isMatch = card1.dataset.icon === card2.dataset.icon;
+
+        if (isMatch) {
+            disableCards();
+        } else {
+            unflipCards();
+        }
+    }
+
+    function disableCards() {
+        flippedCards.forEach(card => {
+            card.classList.add('matched');
+            card.removeEventListener('click', flipCard);
+        });
+        matches++;
+        matchCountDisplay.textContent = matches;
+        resetBoard();
+        
+        if (matches === icons.length) {
+            setTimeout(() => {
+                alert(`Congratulations! You completed the Neural Memory Match in ${moves} moves!`);
+            }, 500);
+        }
+    }
+
+    function unflipCards() {
+        lockBoard = true;
+        setTimeout(() => {
+            flippedCards.forEach(card => card.classList.remove('flipped'));
+            resetBoard();
+        }, 1000);
+    }
+
+    function resetBoard() {
+        flippedCards = [];
+        lockBoard = false;
+    }
+
+    resetBtn.addEventListener('click', createBoard);
+    createBoard();
 }

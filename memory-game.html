@@ -22,38 +22,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Canonical URL -->
-    <link rel="canonical" href="https://product-builder-dte.pages.dev/lotto.html">
+    <link rel="canonical" href="https://product-builder-dte.pages.dev/memory-game.html">
 
     <!-- Primary Meta Tags -->
-    <title>Lucky Lotto Generator - Free Random Number Picker | AI Playground</title>
-    <meta name="description" content="Generate random lottery numbers for free. Our fair algorithm mimics 6/45 lotto systems to give you a unique winning combination. Try it now!">
-    <meta name="keywords" content="lotto generator, random number picker, lottery numbers, 6/45 lotto, lucky numbers, free tool">
+    <title>Neural Memory Match - AI Themed Brain Game | AI Playground</title>
+    <meta name="description" content="Test your memory with our AI-themed memory match game. Find all pairs of AI icons in the shortest time. Fun and educational brain exercise.">
+    <meta name="keywords" content="memory game, brain game, AI icons, matching game, neural memory match, free online game">
     <meta name="author" content="AI Playground">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://product-builder-dte.pages.dev/lotto.html">
-    <meta property="og:title" content="Lucky Lotto Generator - Free Random Number Picker">
-    <meta property="og:description" content="Generate random lottery numbers for free. Our fair algorithm mimics 6/45 lotto systems.">
+    <meta property="og:url" content="https://product-builder-dte.pages.dev/memory-game.html">
+    <meta property="og:title" content="Neural Memory Match - AI Themed Brain Game">
+    <meta property="og:description" content="Test your memory with our AI-themed memory match game. Find all pairs of AI icons.">
     <meta property="og:image" content="https://product-builder-dte.pages.dev/favicon.svg">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://product-builder-dte.pages.dev/lotto.html">
-    <meta property="twitter:title" content="Lucky Lotto Generator - Free Random Number Picker">
-    <meta property="twitter:description" content="Generate random lottery numbers for free. Our fair algorithm mimics 6/45 lotto systems.">
+    <meta property="twitter:url" content="https://product-builder-dte.pages.dev/memory-game.html">
+    <meta property="twitter:title" content="Neural Memory Match - AI Themed Brain Game">
+    <meta property="twitter:description" content="Test your memory with our AI-themed memory match game. Find all pairs of AI icons.">
     <meta property="twitter:image" content="https://product-builder-dte.pages.dev/favicon.svg">
 
     <!-- Structured Data (JSON-LD) -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "Lucky Lotto Generator",
-      "url": "https://product-builder-dte.pages.dev/lotto.html",
-      "description": "A free tool to generate random lottery numbers mimicking the 6/45 format.",
-      "applicationCategory": "UtilityApplication",
-      "operatingSystem": "Web",
+      "@type": "Game",
+      "name": "Neural Memory Match",
+      "url": "https://product-builder-dte.pages.dev/memory-game.html",
+      "description": "An AI-themed memory matching game to challenge your brain.",
+      "genre": "Puzzle",
+      "audience": {
+        "@type": "PeopleAudience",
+        "suggestedMinAge": "3"
+      },
       "offers": {
         "@type": "Offer",
         "price": "0",
@@ -89,29 +92,33 @@
     </header>
 
     <main class="container">
-        <section id="lotto-section" class="feature-section">
+        <section id="memory-game-section" class="feature-section">
             <div class="content-wrapper">
                 <div class="text-content">
-                    <h2><i class="fas fa-ticket-alt"></i> Lucky Lotto Generator</h2>
+                    <h2><i class="fas fa-brain"></i> Neural Memory Match</h2>
                     <p>
-                        Generating random numbers for your lottery ticket has never been easier. 
-                        Our algorithm ensures true randomness, giving you a fair set of numbers every time.
-                        Click the button below to generate your potential winning combination.
-                        This tool mimics the standard 6/45 format used in many popular lotteries.
+                        Strengthen your neural pathways by matching pairs of AI-related symbols. 
+                        This classic memory game is themed around artificial intelligence, featuring icons like robots, microchips, and neural networks.
                     </p>
-                    <h3>How it Works</h3>
-                    <p>
-                        We use a cryptographically strong pseudo-random number generator to pick unique numbers from 1 to 45.
-                        Each ball is color-coded to match traditional lottery aesthetics.
-                    </p>
+                    <h3>Instructions</h3>
+                    <ul class="instructions-list">
+                        <li>Click on a card to flip it over.</li>
+                        <li>Find another card with the same icon to make a match.</li>
+                        <li>Try to find all pairs in as few moves as possible.</li>
+                        <li>Click <strong>"Reset Game"</strong> to start over.</li>
+                    </ul>
                 </div>
-                <div class="tool-content">
-                    <div id="lotto-container"></div>
-                    <button id="generate-btn">Generate Numbers</button>
+                <div class="tool-content game-container">
+                    <div id="memory-stats">
+                        <span>Moves: <span id="move-count">0</span></span>
+                        <span>Matches: <span id="match-count">0</span>/8</span>
+                    </div>
+                    <div id="memory-grid" class="memory-grid"></div>
+                    <button id="reset-memory-btn">Reset Game</button>
                 </div>
             </div>
         </section>
-        
+
         <section id="disqus_section">
             <h3>Community Discussion</h3>
             <div id="disqus_thread"></div>
