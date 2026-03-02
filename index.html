@@ -1,67 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NPKJ12J38W"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-NPKJ12J38W');
-    </script>
-    <script type="text/javascript">
-        (function(c,l,a,r,i,t,y){
-            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-        })(window, document, "clarity", "script", "vfot8jev78");
-    </script>
     <meta charset="UTF-8">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- Canonical URL -->
-    <link rel="canonical" href="https://product-builder-dte.pages.dev/index.html">
+    <title>Tiny Habits Coach - 습관 디자인 코치</title>
+    <meta name="description" content="BJ Fogg의 Tiny Habits 방법론을 활용하여 당신의 큰 목표를 아주 작은 습관으로 디자인해드립니다.">
 
-    <!-- Primary Meta Tags -->
-    <title>AI Playground & Tools - Home</title>
-    <meta name="description" content="Explore AI-powered tools and fun games. Generate lucky lotto numbers and challenge our AI in Rock Paper Scissors. Experience the future of web AI.">
-    <meta name="keywords" content="AI tools, lotto generator, rock paper scissors AI, web AI, artificial intelligence, online games, free tools">
-    <meta name="author" content="AI Playground">
-
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://product-builder-dte.pages.dev/index.html">
-    <meta property="og:title" content="AI Playground & Tools - Home">
-    <meta property="og:description" content="Explore AI-powered tools and fun games. Generate lucky lotto numbers and challenge our AI in Rock Paper Scissors.">
-    <meta property="og:image" content="https://product-builder-dte.pages.dev/favicon.svg">
-
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://product-builder-dte.pages.dev/index.html">
-    <meta property="twitter:title" content="AI Playground & Tools - Home">
-    <meta property="twitter:description" content="Explore AI-powered tools and fun games. Generate lucky lotto numbers and challenge our AI in Rock Paper Scissors.">
-    <meta property="twitter:image" content="https://product-builder-dte.pages.dev/favicon.svg">
-
-    <!-- Structured Data (JSON-LD) -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "url": "https://product-builder-dte.pages.dev/",
-      "name": "AI Playground",
-      "description": "A collection of AI-powered web tools and games.",
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": "https://product-builder-dte.pages.dev/search?q={search_term_string}",
-        "query-input": "required name=search_term_string"
-      }
-    }
-    </script>
     <link rel="stylesheet" href="style.css">
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6263172518351849" crossorigin="anonymous"></script>
-    <meta name="google-adsense-account" content="ca-pub-6263172518351849">
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -70,55 +17,70 @@
         <div class="header-container">
             <div class="logo">
                 <a href="index.html" style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:0.5rem;">
-                    <i class="fas fa-robot"></i> AI Playground
+                    <i class="fas fa-seedling"></i> Tiny Habits Coach
                 </a>
             </div>
             <nav>
                 <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="lotto.html">Lotto</a></li>
-                    <li><a href="rps-game.html">AI Game</a></li>
-                    <li><a href="memory-game.html">Memory</a></li>
-                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="index.html">홈</a></li>
+                    <li><a href="contact.html">문의</a></li>
                 </ul>
             </nav>
-            <button id="theme-toggle-btn">Toggle Theme</button>
+            <button id="theme-toggle-btn">다크 모드</button>
         </div>
     </header>
 
     <main class="container">
         
         <section id="hero">
-            <h1>Welcome to the AI Playground</h1>
+            <h1>작은 습관이 큰 변화를 만듭니다</h1>
             <p class="intro-text">
-                Discover the intersection of utility and artificial intelligence. 
-                Our platform offers simple yet powerful tools designed to demonstrate the capabilities of modern web technologies.
+                BJ Fogg의 Tiny Habits 방법론을 통해 당신의 원대한 목표를 '너무 쉬워서 안 하기가 더 어려운' 아주 작은 행동으로 바꿔보세요.
             </p>
         </section>
 
-        <hr class="divider">
+        <section class="habit-designer">
+            <div class="input-card">
+                <h2>당신의 큰 목표는 무엇인가요?</h2>
+                <div class="input-group">
+                    <input type="text" id="goal-input" placeholder="예: 매일 아침 운동하기, 책 50권 읽기...">
+                    <button id="design-habit-btn">습관 디자인하기</button>
+                </div>
+            </div>
 
-        <section class="feature-section">
-            <div class="content-wrapper" style="flex-direction: row; justify-content: space-around; flex-wrap: wrap; gap: 2rem;">
-                <div class="game-card">
-                    <i class="fas fa-ticket-alt" style="color: #4CAF50;"></i>
-                    <h3>Lucky Lotto Generator</h3>
-                    <p>Generate random numbers for your next lottery ticket with our fair algorithm.</p>
-                    <a href="lotto.html" style="display: inline-block; margin-top: 1rem; color: #4CAF50; font-weight: bold; text-decoration: none;">Try it out &rarr;</a>
+            <div id="loading-spinner" class="hidden">
+                <i class="fas fa-spinner fa-spin"></i> 습관을 디자인 중입니다...
+            </div>
+
+            <div id="result-container" class="hidden">
+                <div class="result-card">
+                    <h3>나의 Tiny Habit</h3>
+                    <div class="habit-recipe">
+                        <div class="recipe-item">
+                            <span class="label">앵커 (기존 루틴 뒤에)</span>
+                            <p id="anchor-text"></p>
+                        </div>
+                        <div class="recipe-item">
+                            <span class="label">작은 행동 (30-120초)</span>
+                            <p id="tiny-action-text"></p>
+                        </div>
+                        <div class="recipe-item">
+                            <span class="label">축하 (즉시, 짧게)</span>
+                            <p id="celebration-text"></p>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="game-card">
-                    <i class="fas fa-hand-scissors" style="color: #2196F3;"></i>
-                    <h3>Rock Paper Scissors AI</h3>
-                    <p>Challenge our computer vision AI in a classic game using your webcam.</p>
-                    <a href="rps-game.html" style="display: inline-block; margin-top: 1rem; color: #2196F3; font-weight: bold; text-decoration: none;">Play Game &rarr;</a>
+                <div class="ladder-card">
+                    <h3>단계별 성장 사다리</h3>
+                    <ul id="difficulty-ladder">
+                        <!-- Ladder items will be injected here -->
+                    </ul>
                 </div>
 
-                <div class="game-card">
-                    <i class="fas fa-brain" style="color: #9c27b0;"></i>
-                    <h3>Neural Memory Match</h3>
-                    <p>Test your memory with our AI-themed matching game. Find all pairs of symbols!</p>
-                    <a href="memory-game.html" style="display: inline-block; margin-top: 1rem; color: #9c27b0; font-weight: bold; text-decoration: none;">Match Pairs &rarr;</a>
+                <div id="json-output-container">
+                    <span class="label">결과 데이터 (JSON)</span>
+                    <pre id="json-output"></pre>
                 </div>
             </div>
         </section>
@@ -127,12 +89,7 @@
 
     <footer>
         <div class="footer-content">
-            <p>&copy; 2024 AI Playground. All rights reserved.</p>
-            <nav class="footer-nav">
-                <a href="#">Privacy Policy</a>
-                <a href="#">Terms of Service</a>
-                <a href="#">About Us</a>
-            </nav>
+            <p>&copy; 2026 Tiny Habits Coach. Based on BJ Fogg's methodology.</p>
         </div>
     </footer>
 
