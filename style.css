@@ -135,6 +135,23 @@ body.dark-theme #theme-toggle-btn {
     margin-bottom: 1.5rem;
 }
 
+.api-settings {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 1rem;
+}
+
+#api-key-input {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 0.85rem;
+    width: 100%;
+    max-width: 300px;
+    background: var(--card-bg);
+    color: var(--text-color);
+}
+
 .input-group {
     display: flex;
     gap: 0.5rem;
@@ -248,25 +265,6 @@ input[type="text"]:focus {
     align-items: center;
     font-size: 0.75rem;
     font-weight: bold;
-}
-
-/* JSON Output */
-#json-output-container {
-    background: #1e1e1e;
-    color: #d4d4d4;
-    padding: 1rem;
-}
-
-#json-output-container .label {
-    color: #858585;
-}
-
-#json-output {
-    margin: 0.5rem 0 0 0;
-    font-family: 'Fira Code', 'Courier New', monospace;
-    font-size: 0.85rem;
-    white-space: pre-wrap;
-    word-break: break-all;
 }
 
 /* Footer */

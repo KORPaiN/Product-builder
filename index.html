@@ -11,6 +11,14 @@
     <link rel="stylesheet" href="style.css">
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Gemini SDK -->
+    <script type="importmap">
+        {
+          "imports": {
+            "@google/generative-ai": "https://esm.run/@google/generative-ai"
+          }
+        }
+      </script>
 </head>
 <body>
     <header>
@@ -41,6 +49,9 @@
 
         <section class="habit-designer">
             <div class="input-card">
+                <div class="api-settings">
+                    <input type="password" id="api-key-input" placeholder="Gemini API Key를 입력하세요 (선택)">
+                </div>
                 <h2>당신의 큰 목표는 무엇인가요?</h2>
                 <div class="input-group">
                     <input type="text" id="goal-input" placeholder="예: 매일 아침 운동하기, 책 50권 읽기...">
@@ -78,10 +89,6 @@
                     </ul>
                 </div>
 
-                <div id="json-output-container">
-                    <span class="label">결과 데이터 (JSON)</span>
-                    <pre id="json-output"></pre>
-                </div>
             </div>
         </section>
 

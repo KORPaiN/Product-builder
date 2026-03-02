@@ -1,3 +1,5 @@
+import { GoogleGenerativeAI } from "@google/generative-ai";
+
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
     initHabitDesigner();
@@ -24,6 +26,7 @@ function initTheme() {
 
 function initHabitDesigner() {
     const goalInput = document.getElementById('goal-input');
+    const apiKeyInput = document.getElementById('api-key-input');
     const designBtn = document.getElementById('design-habit-btn');
     const loadingSpinner = document.getElementById('loading-spinner');
     const resultContainer = document.getElementById('result-container');
@@ -32,10 +35,11 @@ function initHabitDesigner() {
     const tinyActionText = document.getElementById('tiny-action-text');
     const celebrationText = document.getElementById('celebration-text');
     const difficultyLadder = document.getElementById('difficulty-ladder');
-    const jsonOutput = document.getElementById('json-output');
 
     designBtn.addEventListener('click', async () => {
         const goal = goalInput.value.trim();
+        const apiKey = apiKeyInput.value.trim();
+
         if (!goal) {
             alert('목표를 입력해주세요!');
             return;
@@ -44,13 +48,35 @@ function initHabitDesigner() {
         loadingSpinner.classList.remove('hidden');
         resultContainer.classList.add('hidden');
 
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        try {
+            let habitDesign;
+            if (apiKey) {
+                habitDesign = await generateTinyHabitWithAI(goal, apiKey);
+            } else {
+                // Fallback to hardcoded logic if no API key
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                habitDesign = generateTinyHabitLocal(goal);
+            }
+            
+            displayResult(habitDesign);
+        } catch (error) {
+            console.error(error);
+            alert('습관 디자인 중 오류가 발생했습니다: ' + error.message);
+        } finally {
+            loadingSpinner.classList.add('hidden');
+        }
+    });
 
-        const habitDesign = generateTinyHabit(goal);
-        
-        // Update UI components
+    function displayResult(habitDesign) {
         anchorText.textContent = habitDesign.selectedAnchor;
-        tinyActionText.textContent = habitDesign.mva.title.replace(habitDesign.selectedAnchor + ", ", "");
+        
+        // Handle MVA title cleanup
+        let action = habitDesign.mva.title;
+        if (action.includes(habitDesign.selectedAnchor)) {
+            action = action.replace(habitDesign.selectedAnchor, "").replace(/^[, ]+/, "");
+        }
+        tinyActionText.textContent = action;
+        
         celebrationText.textContent = habitDesign.celebrations[0];
         
         difficultyLadder.innerHTML = '';
@@ -64,22 +90,49 @@ function initHabitDesigner() {
             difficultyLadder.appendChild(li);
         });
 
-        jsonOutput.textContent = JSON.stringify(habitDesign, null, 2);
-
-        loadingSpinner.classList.add('hidden');
         resultContainer.classList.remove('hidden');
         resultContainer.scrollIntoView({ behavior: 'smooth' });
-    });
+    }
 }
 
-function generateTinyHabit(goal) {
+async function generateTinyHabitWithAI(goal, apiKey) {
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ 
+        model: "gemini-1.5-flash",
+        generationConfig: { responseMimeType: "application/json" }
+    });
+
+    const prompt = `
+    BJ Fogg의 Tiny Habits 방법론을 사용하여 다음 목표에 대한 습관을 디자인하고 JSON으로 응답하세요.
+    목표: "${goal}"
+
+    응답 JSON 구조:
+    {
+        "language": "ko",
+        "category": "string",
+        "selectedAnchor": "string (구체적인 기존 루틴)",
+        "mva": { "title": "string (앵커 직후의 30초 내외의 아주 작은 행동)" },
+        "levels": [
+            { "title": "난이도 0의 아주 쉬운 행동", "difficulty": 0 },
+            { "title": "난이도 1의 행동 (MVA)", "difficulty": 1 },
+            ... (총 7단계의 점진적 성장 사다리)
+        ],
+        "celebrations": ["string (즉시 할 수 있는 축하 표현 3개 이상)"]
+    }
+    `;
+
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    return JSON.parse(response.text());
+}
+
+function generateTinyHabitLocal(goal) {
     const goalLower = goal.toLowerCase();
     let category = "other";
     let anchors = ["양치 후", "퇴근 직후", "커피를 마신 후"];
     let mvaTitle = "";
     let levels = [];
     let celebrations = ["나이스!", "아주 좋아!", "역시 대단해!"];
-    let safetyNotes = [];
 
     if (goalLower.includes('독서') || goalLower.includes('책')) {
         category = "reading";
@@ -109,7 +162,6 @@ function generateTinyHabit(goal) {
             { "title": "15분 동안 전신 운동을 완료하세요.", "difficulty": 5 },
             { "title": "30분간 목표한 운동 루틴을 완수하세요.", "difficulty": 6 }
         ];
-        safetyNotes = ["관절에 통증이 느껴지면 즉시 중단하고 휴식을 취하세요."];
     } else if (goalLower.includes('공부') || goalLower.includes('학습') || goalLower.includes('강의')) {
         category = "study";
         anchors = ["책상에 앉은 후", "노트북을 켠 후", "저녁 식사를 마친 후"];
@@ -136,22 +188,12 @@ function generateTinyHabit(goal) {
     return {
         "language": "ko",
         "category": category,
-        "suggestedAnchors": anchors,
         "selectedAnchor": anchors[0],
         "mva": {
             "title": mvaTitle,
             "difficulty": 1
         },
         "levels": levels,
-        "celebrations": celebrations,
-        "troubleshooting": {
-            "ifFail": [
-                "난이도를 한 단계 낮추어 다시 시도해 보세요.",
-                "행동을 더 작게 쪼개어 부담을 줄이세요.",
-                "더 자연스럽게 이어질 수 있는 새로운 앵커를 찾으세요.",
-                "주변 환경을 정리하여 행동을 더 쉽게 만드세요."
-            ]
-        },
-        "safetyNotes": safetyNotes
+        "celebrations": celebrations
     };
 }
