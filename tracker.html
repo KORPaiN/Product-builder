@@ -150,13 +150,20 @@
         .heatmap-day.checked {
             background: var(--primary-color);
         }
-        .dark-theme .heatmap-day {
-            background: rgba(255,255,255,0.1);
-        }
-        .dark-theme .heatmap-day.checked {
-            background: #4CAF50;
-            box-shadow: 0 0 8px rgba(76, 175, 80, 0.3);
-        }
+        /* 농도 레벨 (전체 대비 달성률) */
+        .heatmap-day.level-0 { background: rgba(0,0,0,0.05); }
+        .heatmap-day.level-1 { background: #c6e48b; } /* 25% 미만 */
+        .heatmap-day.level-2 { background: #7bc96f; } /* 50% 미만 */
+        .heatmap-day.level-3 { background: #239a3b; } /* 75% 미만 */
+        .heatmap-day.level-4 { background: #196127; } /* 75% 이상 */
+
+        .dark-theme .heatmap-day.level-0 { background: rgba(255,255,255,0.05); }
+        .dark-theme .heatmap-day.level-1 { background: #0e4429; }
+        .dark-theme .heatmap-day.level-2 { background: #006d32; }
+        .dark-theme .heatmap-day.level-3 { background: #26a641; }
+        .dark-theme .heatmap-day.level-4 { background: #39d353; }
+
+        .heatmap-day.today { border: 2px solid #2196F3 !important; }
         .heatmap-tooltip {
             position: absolute;
             bottom: 125%;
@@ -244,8 +251,28 @@
     <main class="container">
         <section id="tracker-dashboard">
             <h1 style="text-align: center; margin-bottom: 0.5rem; font-weight: 800; font-size: 2.5rem; background: -webkit-linear-gradient(45deg, var(--primary-color), #2196F3); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">내 습관 트래커 🔥</h1>
-            <p class="intro-text" style="text-align: center; margin-bottom: 3rem;">꾸준히 실천하며 단계별로 레벨업해 보세요!</p>
             
+            <!-- 통합 달력 섹션 -->
+            <div class="habit-card" style="margin-bottom: 3rem; padding: 2rem;">
+                <div class="calendar-nav" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <button id="prev-month-btn" class="icon-btn" style="font-size: 1.5rem;"><i class="fas fa-chevron-left"></i></button>
+                    <h2 id="calendar-title" style="margin: 0; font-size: 1.5rem; font-weight: 800;">2026년 3월</h2>
+                    <button id="next-month-btn" class="icon-btn" style="font-size: 1.5rem;"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                <div id="global-calendar-grid" class="heatmap-grid" style="gap: 10px;">
+                    <!-- 통합 달력이 여기에 렌더링됨 -->
+                </div>
+                <div style="display: flex; justify-content: flex-end; align-items: center; gap: 8px; margin-top: 1.2rem; font-size: 0.75rem; color: var(--text-muted);">
+                    <span>적음</span>
+                    <div class="heatmap-day level-0" style="width:12px; height:12px;"></div>
+                    <div class="heatmap-day level-1" style="width:12px; height:12px;"></div>
+                    <div class="heatmap-day level-2" style="width:12px; height:12px;"></div>
+                    <div class="heatmap-day level-3" style="width:12px; height:12px;"></div>
+                    <div class="heatmap-day level-4" style="width:12px; height:12px;"></div>
+                    <span>많음</span>
+                </div>
+            </div>
+
             <div id="habits-list">
                 <div id="loading-habits" style="text-align:center; padding: 3rem; font-size: 1.2rem; color: var(--text-muted);">
                     <i class="fas fa-spinner fa-spin"></i> 내 습관을 불러오는 중...

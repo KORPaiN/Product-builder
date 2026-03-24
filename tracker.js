@@ -98,47 +98,32 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
 
                 <div class="habit-level-info">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-weight: 600;">
-                        <span>현재 성장 단계: Lv.${currentLevel}</span>
-                        <span style="color: var(--primary-color);">목표 Lv.6</span>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span class="label">현재 단계 (Lv.${currentLevel})</span>
+                        <span style="font-weight: 800; color: var(--primary-color);">${Math.round((currentLevel/6)*100)}% 달성</span>
                     </div>
-                    <div style="width: 100%; height: 10px; background: rgba(0,0,0,0.1); border-radius: 5px; overflow: hidden;">
-                        <div style="width: ${(currentLevel / 6) * 100}%; height: 100%; background: linear-gradient(90deg, var(--primary-color), #2196F3); border-radius: 5px; transition: width 0.5s ease;"></div>
-                    </div>
+                    <p style="font-size: 1.15rem; font-weight: 700; margin: 0.5rem 0;">${currentLevelObj.title}</p>
                 </div>
-
-                <div class="heatmap-container">
-                    <div class="heatmap-header">
-                        <span>실천 달력 (최근 28일)</span>
-                        <span>🔥 ${calculateStreak(checkInDates)}일 연속 중</span>
-                    </div>
-                    <div class="heatmap-grid" id="heatmap-${docId}"></div>
-                </div>
-
                 <div class="action-row">
-                    ${currentLevel < 6 ? `<button class="levelup-btn" id="lvl-${docId}"><i class="fas fa-arrow-up"></i> 레벨업</button>` : `<span style="padding:1rem; font-weight:800; color:var(--primary-color)">마스터 완료! 🏆</span>`}
+                    ${currentLevel < 6 ? `<button class="levelup-btn" id="lvup-${docId}"><i class="fas fa-arrow-up"></i> 다음 레벨로</button>` : '<span style="color:var(--primary-color); font-weight:800;">✨ 최종 단계 도달!</span>'}
                     <button class="checkin-btn" id="chk-${docId}" ${isCheckedToday ? 'disabled' : ''}>
                         ${isCheckedToday ? '<i class="fas fa-check-circle"></i> 오늘 완료' : '<i class="fas fa-check"></i> 오늘 체크인'}
                     </button>
                 </div>
             `;
             
-            renderMonthlyCalendar(card.querySelector(`#heatmap-${docId}`), checkInDates);
             attachViewEventListeners();
         };
 
-        // --- 2. 편집 뷰 (수정 모드) ---
         const renderEditView = () => {
             card.innerHTML = `
                 <div class="habit-header">
                     <div style="width: 100%;">
                         <label style="font-size:0.8rem; font-weight:700;">대목표 수정</label>
-                        <input type="text" class="edit-input" id="edit-goal-${docId}" value="${data.goal}">
-                        
-                        <label style="font-size:0.8rem; font-weight:700;">평소 자주 하는 습관(시작 신호) 수정</label>
+                        <input type="text" class="edit-input" id="edit-goal-${docId}" value="${goal}">
+                        <label style="font-size:0.8rem; font-weight:700;">평소 루틴 수정</label>
                         <input type="text" class="edit-input" id="edit-anchor-${docId}" value="${recipe.selectedAnchor}">
-                        
-                        <label style="font-size:0.8rem; font-weight:700;">Lv.${currentLevel} 현재 행동 수정</label>
+                        <label style="font-size:0.8rem; font-weight:700;">현재 행동 수정</label>
                         <input type="text" class="edit-input" id="edit-action-${docId}" value="${currentLevelObj.title}">
                     </div>
                 </div>
@@ -155,38 +140,41 @@ document.addEventListener('DOMContentLoaded', () => {
             card.querySelector('.delete-btn').onclick = async () => {
                 if (confirm('이 습관을 영구히 삭제할까요? 기록이 모두 사라집니다.')) {
                     await db.collection('users').doc(uid).collection('habits').doc(docId).delete();
-                    card.remove();
+                    loadHabits(); // Reload all habits and calendar
                 }
             };
             
-            card.querySelector(`#chk-${docId}`).onclick = async (e) => {
-                const btn = e.currentTarget;
-                btn.disabled = true;
-                const newDates = [...checkInDates, todayStr];
-                await db.collection('users').doc(uid).collection('habits').doc(docId).update({
-                    checkInDates: newDates
-                });
-                location.reload(); 
-            };
-
-            card.querySelector(`#lvl-${docId}`)?.addEventListener('click', async () => {
-                if (confirm('다음 난이도로 성장할 준비가 되셨나요?')) {
+            const chkBtn = card.querySelector(`#chk-${docId}`);
+            if (chkBtn) {
+                chkBtn.onclick = async () => {
+                    const now = new Date().toISOString();
                     await db.collection('users').doc(uid).collection('habits').doc(docId).update({
-                        currentLevel: currentLevel + 1
+                        logs: firebase.firestore.FieldValue.arrayUnion(now)
                     });
-                    location.reload();
-                }
-            });
+                    loadHabits(); // Reload all habits and calendar
+                };
+            }
+
+            const lvupBtn = card.querySelector(`#lvup-${docId}`);
+            if (lvupBtn) {
+                lvupBtn.onclick = async () => {
+                    if (confirm(`Lv.${currentLevel + 1}로 레벨업 하시겠습니까? 행동이 조금 더 구체화됩니다.`)) {
+                        await db.collection('users').doc(uid).collection('habits').doc(docId).update({
+                            currentLevel: currentLevel + 1
+                        });
+                        loadHabits(); // Reload all habits and calendar
+                    }
+                };
+            }
         };
 
         const attachEditEventListeners = () => {
             card.querySelector('.cancel-edit-btn').onclick = renderDefaultView;
-            card.querySelector(`#save-edit-${docId}`).onclick = async () => {
+            card.querySelector('.save-edit-btn').onclick = async () => {
                 const newGoal = document.getElementById(`edit-goal-${docId}`).value;
                 const newAnchor = document.getElementById(`edit-anchor-${docId}`).value;
                 const newAction = document.getElementById(`edit-action-${docId}`).value;
-                
-                // 불변성을 위해 깊은 복사 후 업데이트
+
                 const updatedRecipe = JSON.parse(JSON.stringify(recipe));
                 updatedRecipe.selectedAnchor = newAnchor;
                 const lvIdx = updatedRecipe.levels.findIndex(l => l.difficulty === currentLevel);
@@ -196,8 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     goal: newGoal,
                     recipe: updatedRecipe
                 });
-                alert('수정되었습니다!');
-                location.reload();
+                loadHabits(); // Reload all habits and calendar
             };
         };
 
@@ -205,58 +192,57 @@ document.addEventListener('DOMContentLoaded', () => {
         habitsList.appendChild(card);
     }
 
-    // 월간 캘린더 렌더링 (예: 2026년 3월)
-    function renderMonthlyCalendar(container, checkedDates) {
-        const today = new Date();
-        const year = today.getFullYear();
-        const month = today.getMonth(); // 0-11
-        
-        // 해당 월의 첫 날과 마지막 날 정보
+    // --- 통합 달력 렌더링 (월 이동 지원) ---
+    function renderGlobalCalendar() {
+        const year = currentViewDate.getFullYear();
+        const month = currentViewDate.getMonth();
+        calendarTitle.textContent = `${year}년 ${month + 1}월`;
+
         const firstDay = new Date(year, month, 1);
         const lastDay = new Date(year, month + 1, 0);
         const totalDays = lastDay.getDate();
-        const startWeekday = firstDay.getDay(); // 0(일) ~ 6(토)
+        const startWeekday = firstDay.getDay();
 
-        // 헤더 업데이트 (X년 X월)
-        const header = container.parentElement.querySelector('.heatmap-header');
-        if (header) {
-            header.innerHTML = `<span>${year}년 ${month + 1}월</span> <span>실천 현황</span>`;
-        }
+        globalCalendarGrid.innerHTML = '';
 
-        const grid = container;
-        grid.innerHTML = '';
-
-        // 요일 라벨 추가 (일~토)
-        const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
-        weekdays.forEach(wd => {
+        // 요일 라벨
+        ['일', '월', '화', '수', '목', '금', '토'].forEach(wd => {
             const el = document.createElement('div');
             el.className = 'calendar-weekday';
             el.textContent = wd;
-            grid.appendChild(el);
+            globalCalendarGrid.appendChild(el);
         });
 
-        // 1일 이전의 빈 칸 채우기
-        for (let i = 0; i < startWeekday; i++) {
-            const empty = document.createElement('div');
-            grid.appendChild(empty);
-        }
+        for (let i = 0; i < startWeekday; i++) globalCalendarGrid.appendChild(document.createElement('div'));
 
-        // 날짜 채우기
+        const totalHabitCount = allHabits.length;
+
         for (let d = 1; d <= totalDays; d++) {
-            const date = new Date(year, month, d);
-            const dateStr = date.toISOString().split('T')[0];
-            const isChecked = checkedDates.includes(dateStr);
-            const isToday = d === today.getDate() && month === today.getMonth();
+            const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+            
+            // 모든 습관 로그에서 해당 날짜 완료된 개수 합산
+            let doneCount = 0;
+            allHabits.forEach(h => {
+                const logs = h.logs || [];
+                if (logs.some(l => l.startsWith(dateStr))) doneCount++;
+            });
 
             const dayEl = document.createElement('div');
-            dayEl.className = `heatmap-day ${isChecked ? 'checked' : ''}`;
-            if (isToday) dayEl.style.border = '2px solid var(--primary-color)';
+            const ratio = totalHabitCount > 0 ? doneCount / totalHabitCount : 0;
+            let levelClass = 'level-0';
+            if (ratio > 0.75) levelClass = 'level-4';
+            else if (ratio > 0.5) levelClass = 'level-3';
+            else if (ratio > 0.25) levelClass = 'level-2';
+            else if (ratio > 0) levelClass = 'level-1';
+
+            const isToday = d === new Date().getDate() && month === new Date().getMonth() && year === new Date().getFullYear();
+            dayEl.className = `heatmap-day ${levelClass} ${isToday ? 'today' : ''}`;
             
             dayEl.innerHTML = `
                 <div style="font-size: 0.6rem; position: absolute; top: 2px; left: 4px; opacity: 0.6;">${d}</div>
-                <div class="heatmap-tooltip">${dateStr} ${isChecked ? '✅ 실천' : '❌ 미실천'}</div>
+                <div class="heatmap-tooltip">${dateStr}<br>${doneCount} / ${totalHabitCount} 완료</div>
             `;
-            grid.appendChild(dayEl);
+            globalCalendarGrid.appendChild(dayEl);
         }
     }
 
@@ -265,15 +251,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!dates.length) return 0;
         const sortedDates = [...new Set(dates)].sort().reverse();
         let streak = 0;
-        let checkDate = new Date();
-        
-        // 오늘 혹은 어제부터 시작해서 연속되는지 확인
+        const checkDate = new Date();
         const todayStr = checkDate.toISOString().split('T')[0];
         checkDate.setDate(checkDate.getDate() - 1);
         const yesterdayStr = checkDate.toISOString().split('T')[0];
         
         if (!sortedDates.includes(todayStr) && !sortedDates.includes(yesterdayStr)) return 0;
-
         let currentCheck = sortedDates.includes(todayStr) ? new Date() : checkDate;
         
         while (true) {
