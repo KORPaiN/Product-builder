@@ -31,7 +31,7 @@ export async function onRequestPost(context) {
         }
 
         const prompt = `
-BJ Fogg의 Tiny Habits 방법론을 사용하여 다음 목표에 대한 습관을 디자인하고 JSON으로 응답하세요.
+자주 하는 기존 루틴 뒤에 아주 작은 행동을 붙이는 방식으로 다음 목표에 대한 습관을 디자인하고 JSON으로 응답하세요.
 목표: "${goal.trim()}"
 
 응답 JSON 구조:

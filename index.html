@@ -20,8 +20,8 @@
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>Tiny Habits Coach - 습관 디자인 코치</title>
-    <meta name="description" content="BJ Fogg의 Tiny Habits 방법론을 활용하여 당신의 큰 목표를 아주 작은 습관으로 디자인해드립니다.">
+    <title>습관 디자인 코치 - 작은 성취의 힘</title>
+    <meta name="description" content="작은 행동을 아주 쉬운 습관으로 디자인하여 당신의 큰 목표를 이룰 수 있도록 도와드립니다.">
 
     <link rel="stylesheet" href="style.css">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6263172518351849" crossorigin="anonymous"></script>
@@ -34,7 +34,7 @@
         <div class="header-container">
             <div class="logo">
                 <a href="index.html" style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:0.5rem;">
-                    <i class="fas fa-seedling"></i> Tiny Habits Coach
+                    <i class="fas fa-seedling"></i> 습관 디자인 코치
                 </a>
             </div>
             <nav>
@@ -52,8 +52,27 @@
         <section id="hero">
             <h1>작은 습관이 큰 변화를 만듭니다</h1>
             <p class="intro-text">
-                BJ Fogg의 Tiny Habits 방법론을 통해 당신의 원대한 목표를 '너무 쉬워서 안 하기가 더 어려운' 아주 작은 행동으로 바꿔보세요.
+                당신의 원대한 목표를 '너무 쉬워서 안 하기가 더 어려운' 아주 작은 행동으로 쪼개어 실천해보세요.
             </p>
+            
+            <div class="example-cards">
+                <div class="example-card" onclick="document.getElementById('goal-input').value='매일 아침 운동하기'">
+                    <i class="fas fa-dumbbell"></i>
+                    <span>매일 아침 운동</span>
+                </div>
+                <div class="example-card" onclick="document.getElementById('goal-input').value='올해 책 50권 읽기'">
+                    <i class="fas fa-book-open"></i>
+                    <span>책 50권 읽기</span>
+                </div>
+                <div class="example-card" onclick="document.getElementById('goal-input').value='물 하루에 2L 마시기'">
+                    <i class="fas fa-glass-water"></i>
+                    <span>물 2L 마시기</span>
+                </div>
+                <div class="example-card" onclick="document.getElementById('goal-input').value='매일 영어 10문장 외우기'">
+                    <i class="fas fa-language"></i>
+                    <span>영어 10문장 외우기</span>
+                </div>
+            </div>
         </section>
 
         <section class="habit-designer">
@@ -71,7 +90,7 @@
 
             <div id="result-container" class="hidden">
                 <div class="result-card">
-                    <h3>나의 Tiny Habit</h3>
+                    <h3>나의 작은 습관 레시피</h3>
                     <div class="habit-recipe">
                         <div class="recipe-item">
                             <span class="label">앵커 (기존 루틴 뒤에)</span>
@@ -102,7 +121,7 @@
 
     <footer>
         <div class="footer-content">
-            <p>&copy; 2026 Tiny Habits Coach. Based on BJ Fogg's methodology.</p>
+            <p>&copy; 2026 습관 디자인 코치. 당신의 작은 성취를 응원합니다.</p>
         </div>
     </footer>
 

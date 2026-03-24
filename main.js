@@ -1,4 +1,4 @@
-// main.js - Tiny Habits Coach
+// main.js - 습관 디자인 코치
 
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
