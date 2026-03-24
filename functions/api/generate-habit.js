@@ -85,7 +85,7 @@ export async function onRequestPost(context) {
                         contents: [{ parts: [{ text: userPrompt }] }],
                         generationConfig: { 
                             responseMimeType: 'application/json',
-                            maxOutputTokens: 800 // 토큰 과다 사용 방지를 위한 하드 리미트
+                            maxOutputTokens: 2500 // 한국어 토큰 소모량을 고려하여 넉넉히 상향
                         },
                     }),
                 }
