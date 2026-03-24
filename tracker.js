@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             `;
             
-            renderHeatmap(card.querySelector(`#heatmap-${docId}`), checkInDates);
+            renderMonthlyCalendar(card.querySelector(`#heatmap-${docId}`), checkInDates);
             attachViewEventListeners();
         };
 
@@ -205,19 +205,58 @@ document.addEventListener('DOMContentLoaded', () => {
         habitsList.appendChild(card);
     }
 
-    // 최근 28일 달력 렌더링
-    function renderHeatmap(container, checkedDates) {
+    // 월간 캘린더 렌더링 (예: 2026년 3월)
+    function renderMonthlyCalendar(container, checkedDates) {
         const today = new Date();
-        for (let i = 27; i >= 0; i--) {
-            const date = new Date(today);
-            date.setDate(today.getDate() - i);
+        const year = today.getFullYear();
+        const month = today.getMonth(); // 0-11
+        
+        // 해당 월의 첫 날과 마지막 날 정보
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        const totalDays = lastDay.getDate();
+        const startWeekday = firstDay.getDay(); // 0(일) ~ 6(토)
+
+        // 헤더 업데이트 (X년 X월)
+        const header = container.parentElement.querySelector('.heatmap-header');
+        if (header) {
+            header.innerHTML = `<span>${year}년 ${month + 1}월</span> <span>실천 현황</span>`;
+        }
+
+        const grid = container;
+        grid.innerHTML = '';
+
+        // 요일 라벨 추가 (일~토)
+        const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
+        weekdays.forEach(wd => {
+            const el = document.createElement('div');
+            el.className = 'calendar-weekday';
+            el.textContent = wd;
+            grid.appendChild(el);
+        });
+
+        // 1일 이전의 빈 칸 채우기
+        for (let i = 0; i < startWeekday; i++) {
+            const empty = document.createElement('div');
+            grid.appendChild(empty);
+        }
+
+        // 날짜 채우기
+        for (let d = 1; d <= totalDays; d++) {
+            const date = new Date(year, month, d);
             const dateStr = date.toISOString().split('T')[0];
             const isChecked = checkedDates.includes(dateStr);
-            
+            const isToday = d === today.getDate() && month === today.getMonth();
+
             const dayEl = document.createElement('div');
             dayEl.className = `heatmap-day ${isChecked ? 'checked' : ''}`;
-            dayEl.innerHTML = `<div class="heatmap-tooltip">${dateStr} ${isChecked ? '✅ 실천' : '❌ 미실천'}</div>`;
-            container.appendChild(dayEl);
+            if (isToday) dayEl.style.border = '2px solid var(--primary-color)';
+            
+            dayEl.innerHTML = `
+                <div style="font-size: 0.6rem; position: absolute; top: 2px; left: 4px; opacity: 0.6;">${d}</div>
+                <div class="heatmap-tooltip">${dateStr} ${isChecked ? '✅ 실천' : '❌ 미실천'}</div>
+            `;
+            grid.appendChild(dayEl);
         }
     }
 
