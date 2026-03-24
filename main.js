@@ -74,6 +74,15 @@ function initHabitDesigner() {
     let isRequesting = false;
     let lastRequestTime = 0;
 
+    // --- 내 트래커 링크 상시 노출 및 로그인 유도 ---
+    navTrackerLink?.addEventListener('click', (e) => {
+        if (!currentUser) {
+            e.preventDefault(); // 페이지 이동 방지
+            alert('습관 트래커를 이용하려면 먼저 로그인이 필요합니다! 구글 로그인을 진행합니다.');
+            auth.signInWithPopup(provider).catch(e => console.error(e));
+        }
+    });
+
     // --- 추천 칩 클릭 이벤트 ---
     recommendationChips.forEach(chip => {
         chip.addEventListener('click', () => {
@@ -154,7 +163,6 @@ function initHabitDesigner() {
             loginBtn.classList.add('hidden');
             logoutBtn.classList.remove('hidden');
             userProfile.classList.remove('hidden');
-            if (navTrackerLink) navTrackerLink.classList.remove('hidden'); // 트래커 탭 보이기
             loadUserAnchors(user.uid);
         } else {
             // 로그아웃 상태
@@ -163,7 +171,6 @@ function initHabitDesigner() {
             loginBtn.classList.remove('hidden');
             logoutBtn.classList.add('hidden');
             userProfile.classList.add('hidden');
-            if (navTrackerLink) navTrackerLink.classList.add('hidden'); // 트래커 탭 숨기기
         }
     });
 
