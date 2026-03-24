@@ -130,11 +130,17 @@ nav a:hover {
     font-size: 2.5rem;
     margin-bottom: 1.25rem;
     font-weight: 800;
-    letter-spacing: -1px;
+    letter-spacing: -1.5px;
     background: -webkit-linear-gradient(45deg, var(--primary-color), #2196F3);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
+    line-height: 1.2;
+}
+
+@media (max-width: 768px) {
+    #hero h1 { font-size: 2rem; }
+    .intro-text { font-size: 1rem; }
 }
 
 .intro-text {
@@ -196,10 +202,16 @@ nav a:hover {
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--glass-border);
-    padding: 2.5rem;
+    padding: 2rem;
     border-radius: 24px;
     box-shadow: var(--glass-shadow);
     transition: transform 0.3s ease;
+}
+
+@media (max-width: 480px) {
+    .input-card, .result-card, .ladder-card, .partnership-form {
+        padding: 1.25rem;
+    }
 }
 
 .input-card:hover {
@@ -416,6 +428,10 @@ footer {
 }
 
 /* Responsive */
+@media (max-width: 768px) {
+    .container { margin: 1.5rem auto; }
+}
+
 @media (max-width: 600px) {
     .input-group {
         flex-direction: column;
@@ -423,10 +439,12 @@ footer {
     #design-habit-btn {
         padding: 1.25rem;
     }
-    #hero h1 {
-        font-size: 2rem;
-    }
-    .input-card, .result-card, .ladder-card, .partnership-form {
-        padding: 1.5rem;
-    }
+    nav ul { gap: 1rem; }
+    nav a { font-size: 0.9rem; }
+    .logo { font-size: 1.1rem; }
+}
+
+@media (max-width: 400px) {
+    .header-container { padding: 0 1rem; }
+    nav ul { gap: 0.75rem; }
 }

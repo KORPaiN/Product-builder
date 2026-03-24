@@ -103,10 +103,19 @@
             color: white;
             border: none;
             border-radius: 12px;
-            padding: 1rem;
+            padding: 0.8rem;
             font-weight: 700;
             cursor: pointer;
             transition: transform 0.2s;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 600px) {
+            .habit-card { padding: 1.25rem !important; }
+            .habit-title { font-size: 1.2rem !important; }
+            .checkin-btn { padding: 0.8rem 1.2rem; font-size: 0.95rem; }
+            .habit-streak { font-size: 0.9rem; padding: 0.4rem 0.8rem; }
+            .heatmap-header h2 { font-size: 1.1rem !important; }
         }
 
         /* 캘린더 히트맵(잔디 심기) 스타일 */
@@ -129,7 +138,10 @@
         .heatmap-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 8px;
+            gap: 6px;
+        }
+        @media (max-width: 480px) {
+            .heatmap-grid { gap: 4px; }
         }
         .calendar-weekday {
             text-align: center;
@@ -200,7 +212,22 @@
         .icon-btn:hover { color: var(--primary-color); transform: scale(1.1); }
         .icon-btn.delete-btn:hover { color: #f44336; }
 
-        /* 편집 모드 입력창 */
+        .dashboard-title {
+            text-align: center; 
+            margin-bottom: 0.5rem; 
+            font-weight: 800; 
+            font-size: 2.5rem; 
+            background: -webkit-linear-gradient(45deg, var(--primary-color), #2196F3); 
+            -webkit-background-clip: text; 
+            background-clip: text; 
+            -webkit-text-fill-color: transparent;
+        }
+
+        @media (max-width: 600px) {
+            .dashboard-title { font-size: 1.8rem; }
+            .calendar-card { padding: 1rem !important; }
+        }
+    </style>     /* 편집 모드 입력창 */
         .edit-input {
             width: 100%;
             padding: 0.6rem;
@@ -250,14 +277,14 @@
 
     <main class="container">
         <section id="tracker-dashboard">
-            <h1 style="text-align: center; margin-bottom: 0.5rem; font-weight: 800; font-size: 2.5rem; background: -webkit-linear-gradient(45deg, var(--primary-color), #2196F3); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">내 습관 트래커 🔥</h1>
+            <h1 class="dashboard-title">내 습관 트래커 🔥</h1>
             
             <!-- 통합 달력 섹션 -->
-            <div class="habit-card" style="margin-bottom: 3rem; padding: 2rem;">
+            <div class="habit-card calendar-card" style="margin-bottom: 2rem;">
                 <div class="calendar-nav" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                    <button id="prev-month-btn" class="icon-btn" style="font-size: 1.5rem;"><i class="fas fa-chevron-left"></i></button>
-                    <h2 id="calendar-title" style="margin: 0; font-size: 1.5rem; font-weight: 800;">2026년 3월</h2>
-                    <button id="next-month-btn" class="icon-btn" style="font-size: 1.5rem;"><i class="fas fa-chevron-right"></i></button>
+                    <button id="prev-month-btn" class="icon-btn" style="font-size: 1.2rem;"><i class="fas fa-chevron-left"></i></button>
+                    <h2 id="calendar-title" style="margin: 0; font-size: 1.3rem; font-weight: 800;">2026년 3월</h2>
+                    <button id="next-month-btn" class="icon-btn" style="font-size: 1.2rem;"><i class="fas fa-chevron-right"></i></button>
                 </div>
                 <div id="global-calendar-grid" class="heatmap-grid" style="gap: 10px;">
                     <!-- 통합 달력이 여기에 렌더링됨 -->
