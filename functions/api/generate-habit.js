@@ -55,7 +55,7 @@ JSON만 응답하고 다른 텍스트는 포함하지 마세요.
         `;
 
         const geminiRes = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey.trim()}`,
             {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -69,7 +69,17 @@ JSON만 응답하고 다른 텍스트는 포함하지 마세요.
         if (!geminiRes.ok) {
             const errText = await geminiRes.text();
             console.error('Gemini API error:', errText);
-            return new Response(JSON.stringify({ error: 'AI 요청에 실패했습니다.' }), {
+            
+            // 디버깅 목적으로 실제 Gemini 에러를 프론트엔드에 전달
+            let errorDetail = 'AI 요청에 실패했습니다.';
+            try { 
+                 const errObj = JSON.parse(errText);
+                 if (errObj.error && errObj.error.message) errorDetail = errObj.error.message;
+            } catch(e) { 
+                 errorDetail = errText;
+            }
+
+            return new Response(JSON.stringify({ error: `[Gemini 에러] ${errorDetail}` }), {
                 status: 502,
                 headers: corsHeaders,
             });
