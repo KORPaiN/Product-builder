@@ -257,75 +257,50 @@ async function generateTinyHabitWithAI(goal, anchor = "") {
 }
 
 function generateTinyHabitLocal(goal) {
+    const anchorInput = document.getElementById('anchor-input');
+    const userAnchor = anchorInput ? anchorInput.value.trim() : "";
+    const selectedAnchor = userAnchor || "매일 정해진 기존 일상 직후";
+    
+    const celebrations = ["나이스!", "아주 좋아!", "역시 대단해!", "잘했어!", "오늘도 해냈군요!"];
     const goalLower = goal.toLowerCase();
-    let category = "other";
-    let anchors = ["양치 후", "퇴근 직후", "커피를 마신 후", "잠자리에서 일어난 직후"];
-    let mvaTitle = "";
+    
     let levels = [];
-    let celebrations = ["나이스!", "아주 좋아!", "역시 대단해!", "잘했어!"];
-
+    
+    // 단순화된 로컬 생성 로직: 모든 카테고리에서 난이도 0 제거 및 1~6단계 구성
     if (goalLower.includes('독서') || goalLower.includes('책')) {
-        category = "reading";
-        const anchor = "아침 커피 한 모금 후";
-        mvaTitle = `${anchor}, 책을 펴서 딱 한 문장만 읽기`;
         levels = [
-            { "title": "책을 손에 들고 표지만 보기", "difficulty": 0 },
-            { "title": mvaTitle, "difficulty": 1 },
+            { "title": `${goal.slice(0, 10)}... 책 펴서 딱 한 문장 읽기`, "difficulty": 1 },
             { "title": "책 한 페이지 읽기", "difficulty": 2 },
             { "title": "5분 동안 독서하기", "difficulty": 3 },
             { "title": "10분 동안 집중해서 읽기", "difficulty": 4 },
             { "title": "한 챕터 끝까지 읽기", "difficulty": 5 },
-            { "title": "읽은 내용 한 줄 요약하기", "difficulty": 6 }
+            { "title": goal, "difficulty": 6 }
         ];
-        return { category, selectedAnchor: anchor, mva: { title: mvaTitle }, levels, celebrations };
-    } 
-    
-    if (goalLower.includes('운동') || goalLower.includes('팔굽혀펴기') || goalLower.includes('스쿼트')) {
-        const habitDesign = {
-            goalTitle: goal,
-            selectedAnchor: anchor || "매일 정해진 시간에",
-            mva: { title: `${goal.slice(0, 10)}... 아주 조금만 해보기` },
-            levels: [
-                { title: `${goal.slice(0, 10)}... 1분만 하기`, difficulty: 1 },
-                { title: `${goal.slice(0, 10)}... 5분 하기`, difficulty: 2 },
-                { title: `${goal.slice(0, 10)}... 15분 하기`, difficulty: 3 },
-                { title: `${goal.slice(0, 10)}... 30분 하기`, difficulty: 4 },
-                { title: `${goal.slice(0, 10)}... 45분 하기`, difficulty: 5 },
-                { title: goal, difficulty: 6 }
-            ],
-            celebrations: ["나이스!", "멋져요!", "오늘도 해냈군요!"]
-        };
-        return habitDesign;
-    }
-
-    if (goalLower.includes('물') || goalLower.includes('음용')) {
-        category = "health";
-        const anchor = "주방에 들어갈 때마다";
-        mvaTitle = `${anchor}, 물 한 모금 마시기`;
+    } else if (goalLower.includes('물') || goalLower.includes('음용')) {
         levels = [
-            { "title": "컵을 꺼내 놓기", "difficulty": 0 },
-            { "title": mvaTitle, "difficulty": 1 },
+            { "title": "물 한 모금 시원하게 마시기", "difficulty": 1 },
             { "title": "물 반 컵 마시기", "difficulty": 2 },
             { "title": "물 한 컵 가득 마시기", "difficulty": 3 },
-            { "title": "오전 중 물 500ml 마시기", "difficulty": 4 },
-            { "title": "하루 1.5L 목표 달성하기", "difficulty": 5 },
-            { "title": "차나 영양제와 함께 마시기", "difficulty": 6 }
+            { "title": "오전 중 500ml 마시기", "difficulty": 4 },
+            { "title": "하루 1.5L 달성하기", "difficulty": 5 },
+            { "title": goal, "difficulty": 6 }
         ];
-        return { category, selectedAnchor: anchor, mva: { title: mvaTitle }, levels, celebrations };
+    } else {
+        // 일반적인 경우
+        levels = [
+            { "title": `${goal.slice(0, 10)}... 아주 작게 시작하기 (30초)`, "difficulty": 1 },
+            { "title": `${goal.slice(0, 10)}... 조금 더 늘리기 (3분)`, "difficulty": 2 },
+            { "title": `${goal.slice(0, 10)}... 중간 단계 도달 (10분)`, "difficulty": 3 },
+            { "title": `${goal.slice(0, 10)}... 습관 안착시키기 (20분)`, "difficulty": 4 },
+            { "title": `${goal.slice(0, 10)}... 목표에 가까워지기 (40분)`, "difficulty": 5 },
+            { "title": goal, "difficulty": 6 }
+        ];
     }
-
-    // Default Fallback
-    const selectedAnchor = anchors[0];
-    mvaTitle = `${selectedAnchor}, ${goal}을 위한 10초 행동 하기`;
-    levels = Array.from({ length: 7 }, (_, i) => ({
-        "title": i === 1 ? mvaTitle : `${goal} 관련 단계 ${i} 행동 실행`,
-        "difficulty": i
-    }));
 
     return {
         category: "general",
         selectedAnchor,
-        mva: { title: mvaTitle },
+        mva: { title: levels[0].title },
         levels: levels,
         celebrations: celebrations
     };
