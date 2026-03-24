@@ -1,5 +1,26 @@
 // main.js - 습관 디자인 코치
 
+// Firebase 설정 및 초기화
+const firebaseConfig = {
+    apiKey: "AIzaSyBauvvnnl0qfBUoiWwR4TWUqYA5hiaAftM",
+    authDomain: "loginhabittracker-491f0.firebaseapp.com",
+    projectId: "loginhabittracker-491f0",
+    storageBucket: "loginhabittracker-491f0.firebasestorage.app",
+    messagingSenderId: "641004626839",
+    appId: "1:641004626839:web:04a6c240d6b14391675ad2"
+};
+
+let auth, db, provider;
+let currentUser = null;
+let currentHabitDesign = null;
+
+if (window.firebase) {
+    firebase.initializeApp(firebaseConfig);
+    auth = firebase.auth();
+    db = firebase.firestore();
+    provider = new firebase.auth.GoogleAuthProvider();
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
     initHabitDesigner();
@@ -38,10 +59,91 @@ function initHabitDesigner() {
     const tinyActionText = document.getElementById('tiny-action-text');
     const celebrationText = document.getElementById('celebration-text');
     const difficultyLadder = document.getElementById('difficulty-ladder');
+    const loginBtn = document.getElementById('login-btn');
+    const logoutBtn = document.getElementById('logout-btn');
+    const userProfile = document.getElementById('user-profile');
+    const userNameSpan = document.getElementById('user-name');
+    const navTrackerLink = document.getElementById('nav-tracker-link');
+    const saveHabitBtn = document.getElementById('save-habit-btn');
 
     let isRequesting = false;
     let lastRequestTime = 0;
 
+    // --- Firebase Auth (로그인 상태 전환) ---
+    auth.onAuthStateChanged((user) => {
+        if (user) {
+            // 로그인 상태
+            currentUser = user;
+            loginBtn.classList.add('hidden');
+            userProfile.classList.remove('hidden');
+            userNameSpan.textContent = `${user.displayName}님`;
+            navTrackerLink.classList.remove('hidden'); // 트래커 탭 보이기
+        } else {
+            // 로그아웃 상태
+            currentUser = null;
+            loginBtn.classList.remove('hidden');
+            userProfile.classList.add('hidden');
+            navTrackerLink.classList.add('hidden'); // 트래커 탭 숨기기
+        }
+    });
+
+    // 구글 로그인 클릭
+    loginBtn?.addEventListener('click', async () => {
+        try {
+            await auth.signInWithPopup(provider);
+        } catch (error) {
+            console.error(error);
+            alert("로그인 중 오류가 발생했습니다.");
+        }
+    });
+
+    // 로그아웃 클릭
+    logoutBtn?.addEventListener('click', async () => {
+        try {
+            await auth.signOut();
+            alert("로그아웃 되었습니다.");
+        } catch (error) {
+            console.error(error);
+        }
+    });
+
+    // 습관 저장 기능
+    saveHabitBtn?.addEventListener('click', async () => {
+        if (!currentUser) {
+            alert('습관을 저장하고 트래킹하려면 먼저 구글 로그인이 필요합니다!');
+            auth.signInWithPopup(provider).catch(e => console.error(e));
+            return;
+        }
+
+        if (!currentHabitDesign) {
+            alert('저장할 습관 레시피가 없습니다.');
+            return;
+        }
+
+        try {
+            saveHabitBtn.disabled = true;
+            saveHabitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 저장 중...';
+
+            await db.collection('users').doc(currentUser.uid).collection('habits').add({
+                goal: currentHabitDesign.goalTitle || goalInput.value.trim(),
+                recipe: currentHabitDesign,
+                currentLevel: 1, // 1단계(MVA)부터 시작
+                streak: 0,
+                lastCheckInDate: null,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            alert('습관이 내 계정에 성공적으로 저장되었습니다! [내 트래커] 탭에서 확인하세요.');
+            window.location.href = 'tracker.html';
+        } catch (error) {
+            console.error(error);
+            alert('저장 중 오류가 발생했습니다.');
+            saveHabitBtn.disabled = false;
+            saveHabitBtn.innerHTML = '<i class="fas fa-save"></i> 이 습관 내 계정에 저장하고 시작하기';
+        }
+    });
+
+    // --- 기존 디자인 버튼 로직 ---
     designBtn.addEventListener('click', async () => {
         if (isRequesting) return;
 
@@ -69,16 +171,22 @@ function initHabitDesigner() {
             } catch (aiError) {
                 console.warn('AI 요청 실패, 로컬 로직으로 대체합니다.', aiError);
                 
-                // 원인 파악을 돕기 위한 알림
                 if (window.location.protocol === 'file:') {
                     alert('안내: 지금처럼 PC 폴더에서 직접 여신 상태에서는 서버 통신이 불가능해 하드코딩 버전으로 동작합니다. 배포된 웹사이트에서 확인해주세요!');
                 } else if (aiError.message.includes('API')) {
-                    alert(`안내: ${aiError.message}\n임시로 하드코딩 버전으로 동작합니다. (Cloudflare 환경 변수 설정 확인 필요)`);
+                    alert(`안내: ${aiError.message}\n임시로 하드코딩 버전으로 동작합니다.`);
                 }
 
                 await new Promise(resolve => setTimeout(resolve, 400));
                 habitDesign = generateTinyHabitLocal(goal);
             }
+
+            if (!habitDesign || !habitDesign.selectedAnchor) {
+                habitDesign = generateTinyHabitLocal(goal);
+            }
+
+            currentHabitDesign = habitDesign;
+            currentHabitDesign.goalTitle = goal;
 
             lastRequestTime = Date.now();
             displayResult(habitDesign);

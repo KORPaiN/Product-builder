@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NPKJ12J38W"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-NPKJ12J38W');
+    </script>
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "vfot8jev78");
+    </script>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>내 트래커 - 습관 디자인 코치</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    
+    <!-- Firebase SDK (Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        .habit-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            padding: 2.5rem;
+            border-radius: 24px;
+            box-shadow: var(--glass-shadow);
+            margin-bottom: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .habit-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        .habit-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin: 0;
+            color: var(--primary-color);
+        }
+        .habit-streak {
+            background: rgba(255, 152, 0, 0.15);
+            color: #ff9800;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            border: 1px solid rgba(255, 152, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .habit-level-info {
+            background: var(--input-bg);
+            padding: 1.5rem;
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+        }
+        .action-row {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 1rem;
+        }
+        .checkin-btn {
+            background: linear-gradient(135deg, var(--primary-color), #2E7D32);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+        }
+        .checkin-btn:disabled {
+            background: #9e9e9e;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+        .levelup-btn {
+            background: linear-gradient(135deg, #2196F3, #1565C0);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <a href="index.html" style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:0.5rem;">
+                    <i class="fas fa-seedling"></i> 습관 디자인 코치
+                </a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">홈</a></li>
+                    <li><a href="tracker.html" style="color: var(--primary-color);">내 트래커</a></li>
+                    <li><a href="contact.html">문의</a></li>
+                </ul>
+            </nav>
+            <div class="auth-container" style="display: flex; gap: 1rem; align-items: center;">
+                <div id="user-profile" style="display: flex; gap: 0.5rem; align-items: center; font-size:0.9rem;">
+                    <span id="user-name" style="font-weight:700;">로딩중...</span>
+                    <button id="logout-btn" class="glass-btn small-btn" style="background: rgba(255,255,255,0.4); border:1px solid rgba(255,255,255,0.2); border-radius:8px; padding:0.3rem 0.6rem; cursor:pointer; font-size:0.8rem;">로그아웃</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <section id="tracker-dashboard">
+            <h1 style="text-align: center; margin-bottom: 0.5rem; font-weight: 800; font-size: 2.5rem; background: -webkit-linear-gradient(45deg, var(--primary-color), #2196F3); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">내 습관 트래커 🔥</h1>
+            <p class="intro-text" style="text-align: center; margin-bottom: 3rem;">꾸준히 실천하며 단계별로 레벨업해 보세요!</p>
+            
+            <div id="habits-list">
+                <div id="loading-habits" style="text-align:center; padding: 3rem; font-size: 1.2rem; color: var(--text-muted);">
+                    <i class="fas fa-spinner fa-spin"></i> 내 습관을 불러오는 중...
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2026 습관 디자인 코치. 당신의 작은 성취를 응원합니다.</p>
+        </div>
+    </footer>
+
+    <script src="tracker.js"></script>
+</body>
+</html>

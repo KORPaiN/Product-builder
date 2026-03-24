@@ -26,6 +26,12 @@
     <link rel="stylesheet" href="style.css">
     <!-- Pretendard Web Component -->
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    
+    <!-- Firebase SDK (Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6263172518351849" crossorigin="anonymous"></script>
     <meta name="google-adsense-account" content="ca-pub-6263172518351849">
     <!-- Font Awesome for Icons -->
@@ -42,10 +48,18 @@
             <nav>
                 <ul>
                     <li><a href="index.html">홈</a></li>
+                    <li><a href="tracker.html" id="nav-tracker-link" class="hidden">내 트래커</a></li>
                     <li><a href="contact.html">문의</a></li>
                 </ul>
             </nav>
-            <button id="theme-toggle-btn">다크 모드</button>
+            <div class="auth-container" style="display: flex; gap: 1rem; align-items: center;">
+                <button id="login-btn" class="glass-btn small-btn" style="background: rgba(255,255,255,0.7); border:1px solid rgba(255,255,255,0.4); border-radius:12px; padding:0.5rem 1rem; cursor:pointer; font-weight:600;"><i class="fab fa-google"></i> 로그인</button>
+                <div id="user-profile" class="hidden" style="display: flex; gap: 0.5rem; align-items: center; font-size:0.9rem;">
+                    <span id="user-name" style="font-weight:700;"></span>
+                    <button id="logout-btn" class="glass-btn small-btn" style="background: rgba(255,255,255,0.4); border:1px solid rgba(255,255,255,0.2); border-radius:8px; padding:0.3rem 0.6rem; cursor:pointer; font-size:0.8rem;">로그아웃</button>
+                </div>
+                <button id="theme-toggle-btn">다크 모드</button>
+            </div>
         </div>
     </header>
 
@@ -116,6 +130,11 @@
                     </ul>
                 </div>
 
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button id="save-habit-btn" class="glass-btn" style="background: linear-gradient(135deg, var(--primary-color), #2E7D32); color: white; border: none; border-radius: 16px; padding: 1rem 2rem; font-size: 1.05rem; font-weight: 700; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 8px 15px rgba(76, 175, 80, 0.25);">
+                        <i class="fas fa-save"></i> 이 습관 내 계정에 저장하고 시작하기
+                    </button>
+                </div>
             </div>
         </section>
 
