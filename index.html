@@ -131,6 +131,19 @@
                 </div>
 
                 <div style="text-align: center; margin-top: 2rem;">
+                    <div style="margin-bottom: 1.5rem; display: flex; justify-content: center; align-items: center; gap: 0.75rem;">
+                        <label for="start-level" style="font-weight: 700; color: var(--text-color); font-size: 1.05rem;">이 습관의 시작 난이도 선택:</label>
+                        <select id="start-level" style="padding: 0.5rem 1rem; border-radius: 12px; border: 1px solid var(--glass-border); background: var(--input-bg); color: var(--text-color); font-family: inherit; font-weight: 600; font-size: 1rem; cursor: pointer;">
+                            <option value="1">Lv.1 (초소형 행동) - 추천!</option>
+                            <option value="0">Lv.0 (환경 설정만 하기)</option>
+                            <option value="2">Lv.2 (조금 늘린 행동)</option>
+                            <option value="3">Lv.3 (기본 중간 단계)</option>
+                            <option value="4">Lv.4</option>
+                            <option value="5">Lv.5</option>
+                            <option value="6">Lv.6 (최종 목표)</option>
+                        </select>
+                    </div>
+
                     <button id="save-habit-btn" class="glass-btn" style="background: linear-gradient(135deg, var(--primary-color), #2E7D32); color: white; border: none; border-radius: 16px; padding: 1rem 2rem; font-size: 1.05rem; font-weight: 700; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 8px 15px rgba(76, 175, 80, 0.25);">
                         <i class="fas fa-save"></i> 이 습관 내 계정에 저장하고 시작하기
                     </button>

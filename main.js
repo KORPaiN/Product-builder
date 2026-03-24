@@ -120,6 +120,9 @@ function initHabitDesigner() {
             return;
         }
 
+        const startLevelSelect = document.getElementById('start-level');
+        const selectedStartLevel = startLevelSelect ? parseInt(startLevelSelect.value) : 1;
+
         try {
             saveHabitBtn.disabled = true;
             saveHabitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 저장 중...';
@@ -127,9 +130,8 @@ function initHabitDesigner() {
             await db.collection('users').doc(currentUser.uid).collection('habits').add({
                 goal: currentHabitDesign.goalTitle || goalInput.value.trim(),
                 recipe: currentHabitDesign,
-                currentLevel: 1, // 1단계(MVA)부터 시작
-                streak: 0,
-                lastCheckInDate: null,
+                currentLevel: selectedStartLevel,
+                checkInDates: [], // 달력 형태(Heatmap)로 날짜 텍스트(YYYY-MM-DD)를 저장할 배열
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             });
 

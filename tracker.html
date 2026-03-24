@@ -108,6 +108,112 @@
             cursor: pointer;
             transition: transform 0.2s;
         }
+
+        /* 캘린더 히트맵(잔디 심기) 스타일 */
+        .heatmap-container {
+            margin-top: 1.5rem;
+            padding: 1.2rem;
+            background: rgba(0,0,0,0.03);
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+        }
+        .heatmap-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+        .heatmap-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+        }
+        @media (min-width: 480px) {
+            .heatmap-grid { grid-template-columns: repeat(14, 1fr); }
+        }
+        @media (min-width: 768px) {
+            .heatmap-grid { grid-template-columns: repeat(28, 1fr); }
+        }
+        .heatmap-day {
+            aspect-ratio: 1;
+            border-radius: 4px;
+            background: rgba(0,0,0,0.08);
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        .heatmap-day:hover { transform: scale(1.2); z-index: 2; }
+        .heatmap-day.checked {
+            background: var(--primary-color);
+        }
+        .dark-theme .heatmap-day {
+            background: rgba(255,255,255,0.1);
+        }
+        .dark-theme .heatmap-day.checked {
+            background: #4CAF50;
+            box-shadow: 0 0 8px rgba(76, 175, 80, 0.3);
+        }
+        .heatmap-tooltip {
+            position: absolute;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            display: none;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+        .heatmap-day:hover .heatmap-tooltip { display: block; }
+
+        /* 카드 상단 액션(편집/삭제) */
+        .card-top-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.8rem;
+            margin-bottom: -1rem;
+            z-index: 5;
+        }
+        .icon-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1.1rem;
+            padding: 5px;
+            transition: color 0.2s, transform 0.2s;
+        }
+        .icon-btn:hover { color: var(--primary-color); transform: scale(1.1); }
+        .icon-btn.delete-btn:hover { color: #f44336; }
+
+        /* 편집 모드 입력창 */
+        .edit-input {
+            width: 100%;
+            padding: 0.6rem;
+            margin: 0.3rem 0;
+            border-radius: 8px;
+            border: 1px solid var(--primary-color);
+            background: var(--input-bg);
+            color: var(--text-color);
+            font-family: inherit;
+            font-size: 1rem;
+        }
+        .save-edit-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
     </style>
 </head>
 <body>
