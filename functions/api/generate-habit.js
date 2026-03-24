@@ -54,29 +54,44 @@ export async function onRequestPost(context) {
 JSON만 응답하고 다른 텍스트는 포함하지 마세요.
         `;
 
-        const geminiRes = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey.trim()}`,
-            {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    contents: [{ parts: [{ text: prompt }] }],
-                    generationConfig: { responseMimeType: 'application/json' },
-                }),
-            }
-        );
+        const modelsToTry = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-pro'];
+        let geminiRes = null;
+        let lastErrText = '';
 
-        if (!geminiRes.ok) {
-            const errText = await geminiRes.text();
-            console.error('Gemini API error:', errText);
+        for (const model of modelsToTry) {
+            geminiRes = await fetch(
+                `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey.trim()}`,
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }],
+                        generationConfig: { responseMimeType: 'application/json' },
+                    }),
+                }
+            );
+
+            if (geminiRes.ok) {
+                break; // 성공 시 루프 탈출
+            }
+
+            lastErrText = await geminiRes.text();
             
-            // 디버깅 목적으로 실제 Gemini 에러를 프론트엔드에 전달
+            // 모델을 찾을 수 없는 404 에러일 때만 다음 모델로 재시도, 권한 등 다른 에러면 루프 중단
+            if (geminiRes.status !== 404) {
+                break;
+            }
+        }
+
+        if (!geminiRes || !geminiRes.ok) {
+            console.error('Gemini API error:', lastErrText);
+            
             let errorDetail = 'AI 요청에 실패했습니다.';
             try { 
-                 const errObj = JSON.parse(errText);
+                 const errObj = JSON.parse(lastErrText);
                  if (errObj.error && errObj.error.message) errorDetail = errObj.error.message;
             } catch(e) { 
-                 errorDetail = errText;
+                 errorDetail = lastErrText;
             }
 
             return new Response(JSON.stringify({ error: `[Gemini 에러] ${errorDetail}` }), {
