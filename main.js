@@ -39,7 +39,18 @@ function initHabitDesigner() {
     const celebrationText = document.getElementById('celebration-text');
     const difficultyLadder = document.getElementById('difficulty-ladder');
 
+    let isRequesting = false;
+    let lastRequestTime = 0;
+
     designBtn.addEventListener('click', async () => {
+        if (isRequesting) return;
+
+        const now = Date.now();
+        if (now - lastRequestTime < 10000) { // 10초 쿨타임
+            alert('과도한 요청을 방지하기 위해 잠시 후 다시 시도해주세요. (10초 제한)');
+            return;
+        }
+
         const goal = goalInput.value.trim();
 
         if (!goal) {
@@ -49,6 +60,7 @@ function initHabitDesigner() {
 
         loadingSpinner.classList.remove('hidden');
         resultContainer.classList.add('hidden');
+        isRequesting = true;
 
         try {
             let habitDesign;
@@ -68,11 +80,13 @@ function initHabitDesigner() {
                 habitDesign = generateTinyHabitLocal(goal);
             }
 
+            lastRequestTime = Date.now();
             displayResult(habitDesign);
         } catch (error) {
             console.error(error);
             alert('오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
         } finally {
+            isRequesting = false;
             loadingSpinner.classList.add('hidden');
         }
     });

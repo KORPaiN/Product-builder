@@ -66,7 +66,10 @@ JSON만 응답하고 다른 텍스트는 포함하지 마세요.
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         contents: [{ parts: [{ text: prompt }] }],
-                        generationConfig: { responseMimeType: 'application/json' },
+                        generationConfig: { 
+                            responseMimeType: 'application/json',
+                            maxOutputTokens: 800 // 토큰 과다 사용 방지를 위한 하드 리미트
+                        },
                     }),
                 }
             );
