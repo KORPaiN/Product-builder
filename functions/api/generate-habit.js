@@ -76,7 +76,7 @@ JSON만 응답하고 다른 텍스트는 포함하지 마세요.
         }
 
         const geminiData = await geminiRes.json();
-        const resultText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
+        let resultText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
 
         if (!resultText) {
             return new Response(JSON.stringify({ error: 'AI 응답을 파싱할 수 없습니다.' }), {
@@ -85,7 +85,8 @@ JSON만 응답하고 다른 텍스트는 포함하지 마세요.
             });
         }
 
-        // JSON 유효성 검증
+        // JSON 유효성 검증을 위해 앞뒤의 ```json 등의 마크다운 블록 제거
+        resultText = resultText.replace(/^```json\\s*/i, '').replace(/```$/i, '').trim();
         JSON.parse(resultText);
 
         return new Response(resultText, { status: 200, headers: corsHeaders });

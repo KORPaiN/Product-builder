@@ -56,6 +56,14 @@ function initHabitDesigner() {
                 habitDesign = await generateTinyHabitWithAI(goal);
             } catch (aiError) {
                 console.warn('AI 요청 실패, 로컬 로직으로 대체합니다.', aiError);
+                
+                // 원인 파악을 돕기 위한 알림
+                if (window.location.protocol === 'file:') {
+                    alert('안내: 지금처럼 PC 폴더에서 직접 여신 상태에서는 서버 통신이 불가능해 하드코딩 버전으로 동작합니다. 배포된 웹사이트에서 확인해주세요!');
+                } else if (aiError.message.includes('API')) {
+                    alert(`안내: ${aiError.message}\n임시로 하드코딩 버전으로 동작합니다. (Cloudflare 환경 변수 설정 확인 필요)`);
+                }
+
                 await new Promise(resolve => setTimeout(resolve, 400));
                 habitDesign = generateTinyHabitLocal(goal);
             }
