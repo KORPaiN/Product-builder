@@ -28,7 +28,6 @@ function initTheme() {
 
 function initHabitDesigner() {
     const goalInput = document.getElementById('goal-input');
-    const apiKeyInput = document.getElementById('api-key-input');
     const designBtn = document.getElementById('design-habit-btn');
     const loadingSpinner = document.getElementById('loading-spinner');
     const resultContainer = document.getElementById('result-container');
@@ -42,7 +41,6 @@ function initHabitDesigner() {
 
     designBtn.addEventListener('click', async () => {
         const goal = goalInput.value.trim();
-        const apiKey = apiKeyInput.value.trim();
 
         if (!goal) {
             alert('목표를 입력해주세요!');
@@ -54,18 +52,18 @@ function initHabitDesigner() {
 
         try {
             let habitDesign;
-            if (apiKey) {
-                habitDesign = await generateTinyHabitWithAI(goal, apiKey);
-            } else {
-                // Fallback to hardcoded logic
-                await new Promise(resolve => setTimeout(resolve, 800));
+            try {
+                habitDesign = await generateTinyHabitWithAI(goal);
+            } catch (aiError) {
+                console.warn('AI 요청 실패, 로컬 로직으로 대체합니다.', aiError);
+                await new Promise(resolve => setTimeout(resolve, 400));
                 habitDesign = generateTinyHabitLocal(goal);
             }
-            
+
             displayResult(habitDesign);
         } catch (error) {
             console.error(error);
-            alert('오류가 발생했습니다. ' + (apiKey ? 'API 키를 확인하거나 잠시 후 다시 시도해주세요.' : ''));
+            alert('오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
         } finally {
             loadingSpinner.classList.add('hidden');
         }
@@ -98,42 +96,19 @@ function initHabitDesigner() {
     }
 }
 
-async function generateTinyHabitWithAI(goal, apiKey) {
-    // Dynamic import to avoid errors if SDK fails to load or no API key
-    try {
-        const { GoogleGenerativeAI } = await import("@google/generative-ai");
-        const genAI = new GoogleGenerativeAI(apiKey);
-        const model = genAI.getGenerativeModel({ 
-            model: "gemini-1.5-flash",
-            generationConfig: { responseMimeType: "application/json" }
-        });
+async function generateTinyHabitWithAI(goal) {
+    const response = await fetch('/api/generate-habit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ goal }),
+    });
 
-        const prompt = `
-        BJ Fogg의 Tiny Habits 방법론을 사용하여 다음 목표에 대한 습관을 디자인하고 JSON으로 응답하세요.
-        목표: "${goal}"
-
-        응답 JSON 구조:
-        {
-            "language": "ko",
-            "category": "string",
-            "selectedAnchor": "string (구체적인 기존 루틴)",
-            "mva": { "title": "string (앵커 직후의 30초 내외의 아주 작은 행동)" },
-            "levels": [
-                { "title": "난이도 0의 아주 쉬운 행동", "difficulty": 0 },
-                { "title": "난이도 1의 행동 (MVA)", "difficulty": 1 },
-                ... (총 7단계의 점진적 성장 사다리)
-            ],
-            "celebrations": ["string (즉시 할 수 있는 축하 표현 3개 이상)"]
-        }
-        `;
-
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
-        return JSON.parse(response.text());
-    } catch (e) {
-        console.error("AI Generation failed, falling back to local:", e);
-        return generateTinyHabitLocal(goal);
+    if (!response.ok) {
+        const err = await response.json().catch(() => ({}));
+        throw new Error(err.error || 'API 요청 실패');
     }
+
+    return await response.json();
 }
 
 function generateTinyHabitLocal(goal) {

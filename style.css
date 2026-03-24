@@ -135,22 +135,6 @@ body.dark-theme #theme-toggle-btn {
     margin-bottom: 1.5rem;
 }
 
-.api-settings {
-    display: flex;
-    justify-content: flex-end;
-    margin-bottom: 1rem;
-}
-
-#api-key-input {
-    padding: 0.5rem 0.75rem;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    font-size: 0.85rem;
-    width: 100%;
-    max-width: 300px;
-    background: var(--card-bg);
-    color: var(--text-color);
-}
 
 .input-group {
     display: flex;
