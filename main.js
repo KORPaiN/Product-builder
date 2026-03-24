@@ -66,34 +66,101 @@ function initHabitDesigner() {
     const navTrackerLink = document.getElementById('nav-tracker-link');
     const saveHabitBtn = document.getElementById('save-habit-btn');
     const anchorInput = document.getElementById('anchor-input');
-    const anchorChips = document.querySelectorAll('.anchor-chip');
+    const addRoutineBtn = document.getElementById('add-routine-btn');
+    const myRoutinesContainer = document.getElementById('my-routines-container');
+    const myRoutineChips = document.getElementById('my-routine-chips');
+    const recommendationChips = document.querySelectorAll('.anchor-chip:not(#my-routine-chips .anchor-chip)');
 
     let isRequesting = false;
     let lastRequestTime = 0;
 
-    // --- 앵커 칩 클릭 이벤트 ---
-    anchorChips.forEach(chip => {
+    // --- 추천 칩 클릭 이벤트 ---
+    recommendationChips.forEach(chip => {
         chip.addEventListener('click', () => {
             anchorInput.value = chip.dataset.anchor;
-            // 활성화 스타일 표시
-            anchorChips.forEach(c => c.classList.remove('active'));
-            chip.classList.add('active');
+            updateActiveChip(chip);
         });
     });
+
+    function updateActiveChip(activeChip) {
+        document.querySelectorAll('.anchor-chip').forEach(c => c.classList.remove('active'));
+        activeChip.classList.add('active');
+    }
+
+    // --- 나의 루틴(앵커) 저장 로직 ---
+    addRoutineBtn?.addEventListener('click', async () => {
+        if (!currentUser) {
+            alert('루틴을 저장하려면 로그인이 필요합니다!');
+            return;
+        }
+        const anchor = anchorInput.value.trim();
+        if (!anchor) return;
+
+        addRoutineBtn.disabled = true;
+        try {
+            await saveUserAnchor(currentUser.uid, anchor);
+            anchorInput.value = '';
+            loadUserAnchors(currentUser.uid); // 새로고침
+        } catch (e) {
+            console.error(e);
+        } finally {
+            addRoutineBtn.disabled = false;
+        }
+    });
+
+    async function saveUserAnchor(uid, anchor) {
+        const anchorsRef = db.collection('users').doc(uid).collection('anchors');
+        // 중복 체크
+        const snapshot = await anchorsRef.where('text', '==', anchor).get();
+        if (snapshot.empty) {
+            await anchorsRef.add({
+                text: anchor,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+        }
+    }
+
+    async function loadUserAnchors(uid) {
+        const snapshot = await db.collection('users').doc(uid).collection('anchors')
+                                 .orderBy('createdAt', 'desc').limit(10).get();
+        
+        myRoutineChips.innerHTML = '';
+        if (snapshot.empty) {
+            myRoutinesContainer.classList.add('hidden');
+            return;
+        }
+
+        myRoutinesContainer.classList.remove('hidden');
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            const chip = document.createElement('button');
+            chip.className = 'anchor-chip';
+            chip.dataset.anchor = data.text;
+            chip.textContent = `⭐ ${data.text}`;
+            chip.onclick = () => {
+                anchorInput.value = data.text;
+                updateActiveChip(chip);
+            };
+            myRoutineChips.appendChild(chip);
+        });
+    }
 
     // --- Firebase Auth (로그인 상태 전환) ---
     auth.onAuthStateChanged((user) => {
         if (user) {
             // 로그인 상태
             currentUser = user;
-            loginBtn.classList.add('hidden');
-            userProfile.classList.remove('hidden');
             userNameSpan.textContent = `${user.displayName}님`;
-            navTrackerLink.classList.remove('hidden'); // 트래커 탭 보이기
+            loginBtn.classList.add('hidden');
+            logoutBtn.classList.remove('hidden');
+            userProfile.classList.remove('hidden');
+            if (navTrackerLink) navTrackerLink.style.display = 'inline-block'; // 트래커 탭 보이기
+            loadUserAnchors(user.uid);
         } else {
             // 로그아웃 상태
             currentUser = null;
             loginBtn.classList.remove('hidden');
+            logoutBtn.classList.add('hidden');
             userProfile.classList.add('hidden');
             navTrackerLink.classList.add('hidden'); // 트래커 탭 숨기기
         }

@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <label style="font-size:0.8rem; font-weight:700;">대목표 수정</label>
                         <input type="text" class="edit-input" id="edit-goal-${docId}" value="${data.goal}">
                         
-                        <label style="font-size:0.8rem; font-weight:700;">앵커(시작 신호) 수정</label>
+                        <label style="font-size:0.8rem; font-weight:700;">평소 자주 하는 습관(시작 신호) 수정</label>
                         <input type="text" class="edit-input" id="edit-anchor-${docId}" value="${recipe.selectedAnchor}">
                         
                         <label style="font-size:0.8rem; font-weight:700;">Lv.${currentLevel} 현재 행동 수정</label>

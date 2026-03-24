@@ -133,16 +133,33 @@
                 </div>
 
                 <div class="anchor-section" style="margin-top: 1.5rem;">
-                    <h3 style="font-size: 1.1rem; margin-bottom: 0.8rem; opacity: 0.9;">어떤 행동 직후에 이 습관을 할까요? (앵커 행동)</h3>
-                    <div class="input-group">
-                        <input type="text" id="anchor-input" placeholder="예: 양치를 마친 후, 커피를 한 모금 마신 후...">
+                    <h3 style="font-size: 1.1rem; margin-bottom: 0.8rem; opacity: 0.9;">언제 이 습관을 함께 할까요? (평소 자주 하는 습관)</h3>
+                    <div class="input-group" style="display: flex; gap: 0.5rem;">
+                        <input type="text" id="anchor-input" placeholder="예: 양치를 마친 후, 커피를 한 모금 마신 후, 샤워 후 등..." style="flex: 1;">
+                        <button id="add-routine-btn" class="glass-btn" title="나의 루틴으로 저장" style="width: auto; padding: 0.5rem 1rem; border-radius: 12px; font-size: 0.9rem;">
+                            <i class="fas fa-plus"></i> 저장
+                        </button>
                     </div>
-                    <div class="anchor-chips" style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.8rem;">
-                        <button class="anchor-chip" data-anchor="양치를 마친 후">🦷 양치 후</button>
-                        <button class="anchor-chip" data-anchor="모닝 커피를 마신 후">☕ 커피 후</button>
-                        <button class="anchor-chip" data-anchor="퇴근하고 집에 들어오자마자">🏠 퇴근 직후</button>
-                        <button class="anchor-chip" data-anchor="잠자리에 눕자마자">🛌 눕기 직전</button>
-                        <button class="anchor-chip" data-anchor="샤워를 마치고 나와서">🚿 샤워 후</button>
+                    
+                    <div id="my-routines-container" class="hidden" style="margin-top: 1rem;">
+                        <div style="font-size: 0.85rem; font-weight: 700; color: var(--primary-color); margin-bottom: 0.5rem;">
+                            <i class="fas fa-bookmark"></i> 나의 저장된 루틴
+                        </div>
+                        <div id="my-routine-chips" class="anchor-chips" style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                            <!-- 사용자가 저장한 루틴 칩들이 여기에 렌더링됨 -->
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 1rem;">
+                        <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.5rem;">
+                            💡 추천 일상 루틴
+                        </div>
+                        <div class="anchor-chips" style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                            <button class="anchor-chip" data-anchor="양치를 마친 후">🦷 양치 후</button>
+                            <button class="anchor-chip" data-anchor="모닝 커피를 마신 후">☕ 커피 후</button>
+                            <button class="anchor-chip" data-anchor="퇴근하고 집에 들어오자마자">🏠 퇴근 직후</button>
+                            <button class="anchor-chip" data-anchor="잠자리에 눕자마자">🛌 눕기 직전</button>
+                        </div>
                     </div>
                 </div>
 
