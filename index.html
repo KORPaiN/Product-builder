@@ -23,8 +23,10 @@
     <title>습관 디자인 코치 - 작은 성취의 힘</title>
     <meta name="description" content="작은 행동을 아주 쉬운 습관으로 디자인하여 당신의 큰 목표를 이룰 수 있도록 도와드립니다.">
 
+    <script src="lang.js"></script>
     <link rel="stylesheet" href="style.css">
     <!-- Pretendard Web Component -->
+
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     
     <style>
@@ -81,13 +83,18 @@
             </div>
             <nav>
                 <ul>
-                    <li><a href="index.html">홈</a></li>
-                    <li><a href="tracker.html" id="nav-tracker-link">내 트래커</a></li>
-                    <li><a href="contact.html">문의</a></li>
+                    <li><a href="index.html" data-i18n="home">홈</a></li>
+                    <li><a href="tracker.html" id="nav-tracker-link" data-i18n="tracker">내 트래커</a></li>
+                    <li><a href="contact.html" data-i18n="contact">문의</a></li>
                 </ul>
             </nav>
             <div class="auth-container" style="display: flex; gap: 1rem; align-items: center;">
+                <select onchange="setLanguage(this.value)" style="padding: 0.3rem; border-radius: 8px;">
+                    <option value="ko">🇰🇷 한국어</option>
+                    <option value="en">🇺🇸 English</option>
+                </select>
                 <button id="login-btn" class="glass-btn small-btn" style="background: rgba(255,255,255,0.7); border:1px solid rgba(255,255,255,0.4); border-radius:12px; padding:0.5rem 1rem; cursor:pointer; font-weight:600;"><i class="fab fa-google"></i> 로그인</button>
+
                 <div id="user-profile" class="hidden" style="display: flex; gap: 0.5rem; align-items: center; font-size:0.9rem;">
                     <span id="user-name" style="font-weight:700;"></span>
                     <button id="logout-btn" class="glass-btn small-btn" style="background: rgba(255,255,255,0.4); border:1px solid rgba(255,255,255,0.2); border-radius:8px; padding:0.3rem 0.6rem; cursor:pointer; font-size:0.8rem;">로그아웃</button>
