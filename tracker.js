@@ -20,12 +20,21 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.classList.add('dark-theme');
     }
 
+    let currentUser = null;
+    let allHabits = [];
+    let currentViewDate = new Date();
+
     const userNameSpan = document.getElementById('user-name');
     const logoutBtn = document.getElementById('logout-btn');
     const habitsList = document.getElementById('habits-list');
+    const calendarTitle = document.getElementById('calendar-title');
+    const globalCalendarGrid = document.getElementById('global-calendar-grid');
+    const prevMonthBtn = document.getElementById('prev-month-btn');
+    const nextMonthBtn = document.getElementById('next-month-btn');
 
     auth.onAuthStateChanged((user) => {
         if (user) {
+            currentUser = user;
             userNameSpan.textContent = `${user.displayName}님`;
             loadHabits(user.uid);
         } else {
@@ -38,12 +47,23 @@ document.addEventListener('DOMContentLoaded', () => {
         window.location.href = 'index.html';
     });
 
+    // 월 이동 버튼 이벤트 바인딩
+    if (prevMonthBtn) prevMonthBtn.onclick = () => {
+        currentViewDate.setMonth(currentViewDate.getMonth() - 1);
+        renderGlobalCalendar();
+    };
+    if (nextMonthBtn) nextMonthBtn.onclick = () => {
+        currentViewDate.setMonth(currentViewDate.getMonth() + 1);
+        renderGlobalCalendar();
+    };
+
     async function loadHabits(uid) {
         try {
-            const snapshot = await db.collection('users').doc(uid).collection('habits')
-                                     .orderBy('createdAt', 'desc').get();
+            const habitsRef = db.collection('users').doc(uid).collection('habits');
+            const snapshot = await habitsRef.orderBy('createdAt', 'desc').get();
             
             habitsList.innerHTML = '';
+            allHabits = []; // 모든 습관 데이터 초기화
 
             if (snapshot.empty) {
                 habitsList.innerHTML = `
@@ -54,33 +74,38 @@ document.addEventListener('DOMContentLoaded', () => {
                         <a href="index.html" class="checkin-btn" style="text-decoration:none;">습관 설계하러 가기</a>
                     </div>
                 `;
+                renderGlobalCalendar();
                 return;
             }
 
             snapshot.forEach(doc => {
-                renderHabitCard(doc.id, doc.data(), uid);
+                const data = doc.data();
+                const habit = { id: doc.id, ...data };
+                allHabits.push(habit);
+                renderHabitCard(habit, uid);
             });
+
+            renderGlobalCalendar();
         } catch (error) {
-            console.error("로드 에러:", error);
-            habitsList.innerHTML = `<div style="text-align:center; color:red;">데이터 로드 중 오류 발생</div>`;
+            console.error("데이터 로드 중 오류:", error);
+            habitsList.innerHTML = `<div style="text-align:center; color:red; padding: 2rem;">데이터를 불러오는 중 문제가 발생했습니다. (권한 또는 네트워크 오류)</div>`;
         }
     }
 
-    function renderHabitCard(docId, data, uid) {
-        const recipe = data.recipe;
-        const currentLevel = data.currentLevel || 1;
+    function renderHabitCard(habit, uid) {
+        const { id: docId, goal, recipe, currentLevel = 1, logs = [] } = habit;
         const levels = recipe.levels || [];
         const currentLevelObj = levels.find(l => l.difficulty === currentLevel) || { title: "정의되지 않음" };
         
-        const checkInDates = data.checkInDates || [];
         const todayStr = new Date().toISOString().split('T')[0];
+        // logs 배열에는 ISO String이 들어감 (ex: 2026-03-24T12:34:56Z)
+        const checkInDates = logs.map(l => l.split('T')[0]);
         const isCheckedToday = checkInDates.includes(todayStr);
 
         const card = document.createElement('div');
         card.className = 'habit-card';
         card.id = `card-${docId}`;
         
-        // --- 1. 기본 뷰 (보기 모드) ---
         const renderDefaultView = () => {
             card.innerHTML = `
                 <div class="card-top-actions">
@@ -89,29 +114,31 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <div class="habit-header">
                     <div>
-                        <div style="font-size: 0.9rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.2rem;">목표: ${data.goal}</div>
+                        <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.1rem;"># ${goal}</div>
                         <h2 class="habit-title">${recipe.selectedAnchor} ➔ ${currentLevelObj.title}</h2>
                     </div>
                     <div class="habit-streak">
-                         <i class="fas fa-calendar-check"></i> 총 ${checkInDates.length}회 실천
+                         <i class="fas fa-fire"></i> ${calculateStreak(checkInDates)}일 연속
                     </div>
                 </div>
 
                 <div class="habit-level-info">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span class="label">현재 단계 (Lv.${currentLevel})</span>
-                        <span style="font-weight: 800; color: var(--primary-color);">${Math.round((currentLevel/6)*100)}% 달성</span>
+                        <span class="label">성장 단계 (Lv.${currentLevel})</span>
+                        <span style="font-weight: 800; color: var(--primary-color);">${Math.round((currentLevel/6)*100)}%</span>
                     </div>
-                    <p style="font-size: 1.15rem; font-weight: 700; margin: 0.5rem 0;">${currentLevelObj.title}</p>
+                    <div style="width: 100%; height: 6px; background: rgba(0,0,0,0.05); border-radius: 3px; margin: 0.5rem 0 1rem; overflow: hidden;">
+                        <div style="width: ${(currentLevel/6)*100}%; height: 100%; background: var(--primary-color); border-radius: 3px;"></div>
+                    </div>
+                    <p style="font-size: 1.15rem; font-weight: 700; margin: 0;">${currentLevelObj.title}</p>
                 </div>
                 <div class="action-row">
-                    ${currentLevel < 6 ? `<button class="levelup-btn" id="lvup-${docId}"><i class="fas fa-arrow-up"></i> 다음 레벨로</button>` : '<span style="color:var(--primary-color); font-weight:800;">✨ 최종 단계 도달!</span>'}
+                    ${currentLevel < 6 ? `<button class="levelup-btn" id="lvup-${docId}"><i class="fas fa-arrow-up"></i> 다음 레벨로</button>` : '<span style="color:var(--primary-color); font-weight:800;">✨ 마스터 달성!</span>'}
                     <button class="checkin-btn" id="chk-${docId}" ${isCheckedToday ? 'disabled' : ''}>
                         ${isCheckedToday ? '<i class="fas fa-check-circle"></i> 오늘 완료' : '<i class="fas fa-check"></i> 오늘 체크인'}
                     </button>
                 </div>
             `;
-            
             attachViewEventListeners();
         };
 
@@ -119,11 +146,11 @@ document.addEventListener('DOMContentLoaded', () => {
             card.innerHTML = `
                 <div class="habit-header">
                     <div style="width: 100%;">
-                        <label style="font-size:0.8rem; font-weight:700;">대목표 수정</label>
+                        <label style="font-size:0.8rem; font-weight:700;">목표 명칭</label>
                         <input type="text" class="edit-input" id="edit-goal-${docId}" value="${goal}">
-                        <label style="font-size:0.8rem; font-weight:700;">평소 루틴 수정</label>
+                        <label style="font-size:0.8rem; font-weight:700;">평소 루틴(앵커)</label>
                         <input type="text" class="edit-input" id="edit-anchor-${docId}" value="${recipe.selectedAnchor}">
-                        <label style="font-size:0.8rem; font-weight:700;">현재 행동 수정</label>
+                        <label style="font-size:0.8rem; font-weight:700;">현 단계 세부 행동</label>
                         <input type="text" class="edit-input" id="edit-action-${docId}" value="${currentLevelObj.title}">
                     </div>
                 </div>
@@ -138,9 +165,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const attachViewEventListeners = () => {
             card.querySelector('.edit-toggle-btn').onclick = renderEditView;
             card.querySelector('.delete-btn').onclick = async () => {
-                if (confirm('이 습관을 영구히 삭제할까요? 기록이 모두 사라집니다.')) {
+                if (confirm('이 습관을 정말 삭제할까요? 기록이 모두 사라집니다.')) {
                     await db.collection('users').doc(uid).collection('habits').doc(docId).delete();
-                    loadHabits(); // Reload all habits and calendar
+                    loadHabits(uid);
                 }
             };
             
@@ -151,18 +178,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     await db.collection('users').doc(uid).collection('habits').doc(docId).update({
                         logs: firebase.firestore.FieldValue.arrayUnion(now)
                     });
-                    loadHabits(); // Reload all habits and calendar
+                    loadHabits(uid); // 데이터 재로드 및 달력 갱신
                 };
             }
 
             const lvupBtn = card.querySelector(`#lvup-${docId}`);
             if (lvupBtn) {
                 lvupBtn.onclick = async () => {
-                    if (confirm(`Lv.${currentLevel + 1}로 레벨업 하시겠습니까? 행동이 조금 더 구체화됩니다.`)) {
+                    if (confirm(`Lv.${currentLevel + 1}(으)로 레벨업 할까요?`)) {
                         await db.collection('users').doc(uid).collection('habits').doc(docId).update({
                             currentLevel: currentLevel + 1
                         });
-                        loadHabits(); // Reload all habits and calendar
+                        loadHabits(uid);
                     }
                 };
             }
@@ -184,7 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     goal: newGoal,
                     recipe: updatedRecipe
                 });
-                loadHabits(); // Reload all habits and calendar
+                loadHabits(uid);
             };
         };
 
@@ -192,8 +219,9 @@ document.addEventListener('DOMContentLoaded', () => {
         habitsList.appendChild(card);
     }
 
-    // --- 통합 달력 렌더링 (월 이동 지원) ---
     function renderGlobalCalendar() {
+        if (!calendarTitle || !globalCalendarGrid) return;
+
         const year = currentViewDate.getFullYear();
         const month = currentViewDate.getMonth();
         calendarTitle.textContent = `${year}년 ${month + 1}월`;
@@ -205,7 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         globalCalendarGrid.innerHTML = '';
 
-        // 요일 라벨
+        // 요일 헤더
         ['일', '월', '화', '수', '목', '금', '토'].forEach(wd => {
             const el = document.createElement('div');
             el.className = 'calendar-weekday';
@@ -213,7 +241,10 @@ document.addEventListener('DOMContentLoaded', () => {
             globalCalendarGrid.appendChild(el);
         });
 
-        for (let i = 0; i < startWeekday; i++) globalCalendarGrid.appendChild(document.createElement('div'));
+        // 시작 요일 빈칸
+        for (let i = 0; i < startWeekday; i++) {
+            globalCalendarGrid.appendChild(document.createElement('div'));
+        }
 
         const totalHabitCount = allHabits.length;
 
@@ -224,6 +255,7 @@ document.addEventListener('DOMContentLoaded', () => {
             let doneCount = 0;
             allHabits.forEach(h => {
                 const logs = h.logs || [];
+                // logs 항목 중 dateStr로 시작하는 것(날짜 일치)이 있는지 확인
                 if (logs.some(l => l.startsWith(dateStr))) doneCount++;
             });
 
@@ -235,9 +267,10 @@ document.addEventListener('DOMContentLoaded', () => {
             else if (ratio > 0.25) levelClass = 'level-2';
             else if (ratio > 0) levelClass = 'level-1';
 
-            const isToday = d === new Date().getDate() && month === new Date().getMonth() && year === new Date().getFullYear();
-            dayEl.className = `heatmap-day ${levelClass} ${isToday ? 'today' : ''}`;
+            const realToday = new Date();
+            const isToday = d === realToday.getDate() && month === realToday.getMonth() && year === realToday.getFullYear();
             
+            dayEl.className = `heatmap-day ${levelClass} ${isToday ? 'today' : ''}`;
             dayEl.innerHTML = `
                 <div style="font-size: 0.6rem; position: absolute; top: 2px; left: 4px; opacity: 0.6;">${d}</div>
                 <div class="heatmap-tooltip">${dateStr}<br>${doneCount} / ${totalHabitCount} 완료</div>
@@ -246,7 +279,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // 연속 달성일(Streak) 계산 로직
     function calculateStreak(dates) {
         if (!dates.length) return 0;
         const sortedDates = [...new Set(dates)].sort().reverse();
@@ -256,6 +288,7 @@ document.addEventListener('DOMContentLoaded', () => {
         checkDate.setDate(checkDate.getDate() - 1);
         const yesterdayStr = checkDate.toISOString().split('T')[0];
         
+        // 오늘 혹은 어제부터 시작해서 연속되는지 확인
         if (!sortedDates.includes(todayStr) && !sortedDates.includes(yesterdayStr)) return 0;
         let currentCheck = sortedDates.includes(todayStr) ? new Date() : checkDate;
         
@@ -264,9 +297,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (sortedDates.includes(s)) {
                 streak++;
                 currentCheck.setDate(currentCheck.getDate() - 1);
-            } else {
-                break;
-            }
+            } else { break; }
         }
         return streak;
     }
