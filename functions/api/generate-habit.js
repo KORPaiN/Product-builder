@@ -130,11 +130,24 @@ export async function onRequestPost(context) {
             });
         }
 
-        // JSON 유효성 검증을 위해 앞뒤의 ```json 등의 마크다운 블록 제거
-        resultText = resultText.replace(/^```json\\s*/i, '').replace(/```$/i, '').trim();
-        JSON.parse(resultText);
+        // JSON 추출: 가끔 AI가 앞뒤에 대화형 문장을 붙이는 경우를 대비하여 중괄호만 추출
+        const firstBrace = resultText.indexOf('{');
+        const lastBrace = resultText.lastIndexOf('}');
 
-        return new Response(resultText, { status: 200, headers: corsHeaders });
+        if (firstBrace !== -1 && lastBrace !== -1) {
+            resultText = resultText.substring(firstBrace, lastBrace + 1);
+        }
+
+        try {
+            JSON.parse(resultText);
+            return new Response(resultText, { status: 200, headers: corsHeaders });
+        } catch (parseError) {
+            console.error('JSON Parse error:', parseError, 'Raw Text:', resultText);
+            return new Response(JSON.stringify({ error: 'AI가 JSON 형식을 반환하지 않았습니다. (프롬프트 오류 또는 처리 지연)' }), {
+                status: 502,
+                headers: corsHeaders,
+            });
+        }
 
     } catch (err) {
         console.error('Function error:', err);
