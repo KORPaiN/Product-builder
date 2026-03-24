@@ -154,15 +154,16 @@ function initHabitDesigner() {
             loginBtn.classList.add('hidden');
             logoutBtn.classList.remove('hidden');
             userProfile.classList.remove('hidden');
-            if (navTrackerLink) navTrackerLink.style.display = 'inline-block'; // 트래커 탭 보이기
+            if (navTrackerLink) navTrackerLink.classList.remove('hidden'); // 트래커 탭 보이기
             loadUserAnchors(user.uid);
         } else {
             // 로그아웃 상태
             currentUser = null;
+            userNameSpan.textContent = '';
             loginBtn.classList.remove('hidden');
             logoutBtn.classList.add('hidden');
             userProfile.classList.add('hidden');
-            navTrackerLink.classList.add('hidden'); // 트래커 탭 숨기기
+            if (navTrackerLink) navTrackerLink.classList.add('hidden'); // 트래커 탭 숨기기
         }
     });
 
