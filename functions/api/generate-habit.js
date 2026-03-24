@@ -30,9 +30,10 @@ export async function onRequestPost(context) {
             });
         }
 
-        const prompt = `
+        const systemPrompt = `
 당신은 세계 최고의 행동심리학자이자 '습관 디자인 코치'입니다.
 사용자가 제시한 거창한 목표를 절대 실패할 수 없는 아주 작고 쉬운 '초소형 행동(Micro-habit)'으로 설계해주는 것이 당신의 역할입니다.
+어떤 상황에서도 인사말이나 부연 설명을 절대 덧붙이지 마세요. 오직 요청된 순수 JSON 포맷의 데이터만 반환해야 합니다.
 
 [습관 설계 4대 핵심 원칙]
 1. 앵커 (selectedAnchor): 사용자가 매일 '무의식적으로, 무조건 하는 기존 루틴'이어야 합니다. 
@@ -47,10 +48,6 @@ export async function onRequestPost(context) {
    - [난이도 1]: 위에서 정의한 MVA (초소형 행동 1회)
    - [난이도 2~5]: 양이나 빈도를 아주 조금씩 늘려가는 구체적 과정
    - [난이도 6]: 사용자가 꿈꾸는 궁극적이고 완전한 형태의 목표 행동
-
-목표: "${goal.trim()}"
-
-위 원칙을 완벽하게 적용하여 아래 JSON 구조로 응답하세요. (마크다운 \`\`\`json 등의 래핑 없이 오직 순수한 JSON 텍스트 구문만 반환해야 합니다.)
 
 응답 JSON 구조:
 {
@@ -71,6 +68,8 @@ export async function onRequestPost(context) {
 }
 `;
 
+        const userPrompt = `목표: "${goal.trim()}"\n위 원칙을 완벽하게 적용하여 순수한 JSON 구조로 응답하세요.`;
+
         const modelsToTry = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-pro'];
         let geminiRes = null;
         let lastErrText = '';
@@ -82,7 +81,8 @@ export async function onRequestPost(context) {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        contents: [{ parts: [{ text: prompt }] }],
+                        systemInstruction: { parts: [{ text: systemPrompt }] },
+                        contents: [{ parts: [{ text: userPrompt }] }],
                         generationConfig: { 
                             responseMimeType: 'application/json',
                             maxOutputTokens: 800 // 토큰 과다 사용 방지를 위한 하드 리미트
