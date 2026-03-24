@@ -1,30 +1,32 @@
 /* Global Styles & Variables */
 :root {
-    --primary-color: #4CAF50;
-    --primary-hover: #43a047;
-    --bg-gradient-start: #e0f8f1;
-    --bg-gradient-mid: #f3e5f5;
-    --bg-gradient-end: #e8eaf6;
-    --glass-bg: rgba(255, 255, 255, 0.65);
-    --glass-border: rgba(255, 255, 255, 0.4);
-    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
-    --text-color: #2c3e50;
-    --text-muted: #546e7a;
-    --input-bg: rgba(255, 255, 255, 0.8);
+    --primary-color: #A8D5BA;
+    --primary-hover: #8fc7a5;
+    --secondary-color: #F9DCC4;
+    --bg-gradient-start: #fdfcfb;
+    --bg-gradient-mid: #fbf5ef;
+    --bg-gradient-end: #f5ece5;
+    --glass-bg: rgba(255, 255, 255, 0.8);
+    --glass-border: rgba(255, 255, 255, 0.6);
+    --glass-shadow: 0 10px 30px 0 rgba(168, 213, 186, 0.15);
+    --text-color: #5d6d7e;
+    --text-muted: #8e9fae;
+    --input-bg: rgba(255, 255, 255, 0.9);
 }
 
 body.dark-theme {
-    --primary-color: #66bb6a;
-    --primary-hover: #4CAF50;
-    --bg-gradient-start: #0f172a;
-    --bg-gradient-mid: #1e1b4b;
-    --bg-gradient-end: #064e3b;
-    --glass-bg: rgba(30, 41, 59, 0.65);
-    --glass-border: rgba(255, 255, 255, 0.08);
-    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
-    --text-color: #f8fafc;
-    --text-muted: #94a3b8;
-    --input-bg: rgba(15, 23, 42, 0.8);
+    --primary-color: #8fc7a5;
+    --primary-hover: #A8D5BA;
+    --secondary-color: #e5c0a3;
+    --bg-gradient-start: #2c3e50;
+    --bg-gradient-mid: #243444;
+    --bg-gradient-end: #1c2833;
+    --glass-bg: rgba(44, 62, 80, 0.8);
+    --glass-border: rgba(255, 255, 255, 0.05);
+    --glass-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.3);
+    --text-color: #dcdcdc;
+    --text-muted: #a0a0a0;
+    --input-bg: rgba(30, 40, 50, 0.9);
 }
 
 body {
@@ -32,12 +34,10 @@ body {
     margin: 0;
     padding: 0;
     min-height: 100vh;
-    background: linear-gradient(-45deg, var(--bg-gradient-start), var(--bg-gradient-mid), var(--bg-gradient-end));
-    background-size: 400% 400%;
-    animation: gradientBG 15s ease infinite;
+    background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
     color: var(--text-color);
     transition: background 0.5s ease, color 0.3s ease;
-    line-height: 1.6;
+    line-height: 1.7;
 }
 
 @keyframes gradientBG {
@@ -432,16 +432,29 @@ footer {
     .container { margin: 1.5rem auto; }
 }
 
+/* Responsive & Mobile Menu */
 @media (max-width: 600px) {
-    .input-group {
-        flex-direction: column;
+    nav ul {
+        gap: 0.5rem;
     }
-    #design-habit-btn {
-        padding: 1.25rem;
+    nav a span {
+        display: none;
     }
-    nav ul { gap: 1rem; }
-    nav a { font-size: 0.9rem; }
-    .logo { font-size: 1.1rem; }
+    nav a i {
+        font-size: 1.2rem;
+        margin: 0;
+    }
+}
+
+/* Rounded Cards */
+.input-card, .result-card, .ladder-card, .partnership-form {
+    border-radius: 32px;
+}
+input[type="text"], input[type="email"], textarea {
+    border-radius: 20px;
+}
+.example-card {
+    border-radius: 20px;
 }
 
 @media (max-width: 400px) {
