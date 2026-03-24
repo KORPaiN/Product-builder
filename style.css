@@ -133,6 +133,7 @@ nav a:hover {
     letter-spacing: -1px;
     background: -webkit-linear-gradient(45deg, var(--primary-color), #2196F3);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
