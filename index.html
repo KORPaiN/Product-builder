@@ -27,6 +27,40 @@
     <!-- Pretendard Web Component -->
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     
+    <style>
+        .anchor-chip {
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid var(--glass-border);
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-color);
+        }
+        .anchor-chip:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+        .anchor-chip.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        .cta-btn {
+            background: linear-gradient(135deg, var(--primary-color), #2E7D32);
+            color: white;
+            border: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .cta-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 20px rgba(76, 175, 80, 0.3);
+        }
+    </style>
+
     <!-- Firebase SDK (Compat) -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
@@ -96,7 +130,26 @@
                 <h2>당신의 큰 목표는 무엇인가요?</h2>
                 <div class="input-group">
                     <input type="text" id="goal-input" placeholder="예: 매일 아침 운동하기, 책 50권 읽기...">
-                    <button id="design-habit-btn">습관 디자인하기</button>
+                </div>
+
+                <div class="anchor-section" style="margin-top: 1.5rem;">
+                    <h3 style="font-size: 1.1rem; margin-bottom: 0.8rem; opacity: 0.9;">어떤 행동 직후에 이 습관을 할까요? (앵커 행동)</h3>
+                    <div class="input-group">
+                        <input type="text" id="anchor-input" placeholder="예: 양치를 마친 후, 커피를 한 모금 마신 후...">
+                    </div>
+                    <div class="anchor-chips" style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.8rem;">
+                        <button class="anchor-chip" data-anchor="양치를 마친 후">🦷 양치 후</button>
+                        <button class="anchor-chip" data-anchor="모닝 커피를 마신 후">☕ 커피 후</button>
+                        <button class="anchor-chip" data-anchor="퇴근하고 집에 들어오자마자">🏠 퇴근 직후</button>
+                        <button class="anchor-chip" data-anchor="잠자리에 눕자마자">🛌 눕기 직전</button>
+                        <button class="anchor-chip" data-anchor="샤워를 마치고 나와서">🚿 샤워 후</button>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button id="design-habit-btn" class="glass-btn cta-btn" style="width: 100%; border-radius: 16px; padding: 1.2rem; font-size: 1.2rem; font-weight: 800;">
+                        습관 디자인하기 <i class="fas fa-magic"></i>
+                    </button>
                 </div>
             </div>
 
@@ -135,7 +188,6 @@
                         <label for="start-level" style="font-weight: 700; color: var(--text-color); font-size: 1.05rem;">이 습관의 시작 난이도 선택:</label>
                         <select id="start-level" style="padding: 0.5rem 1rem; border-radius: 12px; border: 1px solid var(--glass-border); background: var(--input-bg); color: var(--text-color); font-family: inherit; font-weight: 600; font-size: 1rem; cursor: pointer;">
                             <option value="1">Lv.1 (초소형 행동) - 추천!</option>
-                            <option value="0">Lv.0 (환경 설정만 하기)</option>
                             <option value="2">Lv.2 (조금 늘린 행동)</option>
                             <option value="3">Lv.3 (기본 중간 단계)</option>
                             <option value="4">Lv.4</option>

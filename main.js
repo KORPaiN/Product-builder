@@ -65,9 +65,21 @@ function initHabitDesigner() {
     const userNameSpan = document.getElementById('user-name');
     const navTrackerLink = document.getElementById('nav-tracker-link');
     const saveHabitBtn = document.getElementById('save-habit-btn');
+    const anchorInput = document.getElementById('anchor-input');
+    const anchorChips = document.querySelectorAll('.anchor-chip');
 
     let isRequesting = false;
     let lastRequestTime = 0;
+
+    // --- 앵커 칩 클릭 이벤트 ---
+    anchorChips.forEach(chip => {
+        chip.addEventListener('click', () => {
+            anchorInput.value = chip.dataset.anchor;
+            // 활성화 스타일 표시
+            anchorChips.forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+        });
+    });
 
     // --- Firebase Auth (로그인 상태 전환) ---
     auth.onAuthStateChanged((user) => {
@@ -156,6 +168,7 @@ function initHabitDesigner() {
         }
 
         const goal = goalInput.value.trim();
+        const anchor = anchorInput.value.trim();
 
         if (!goal) {
             alert('목표를 입력해주세요!');
@@ -169,7 +182,7 @@ function initHabitDesigner() {
         try {
             let habitDesign;
             try {
-                habitDesign = await generateTinyHabitWithAI(goal);
+                habitDesign = await generateTinyHabitWithAI(goal, anchor);
             } catch (aiError) {
                 console.warn('AI 요청 실패, 로컬 로직으로 대체합니다.', aiError);
                 
@@ -228,11 +241,11 @@ function initHabitDesigner() {
     }
 }
 
-async function generateTinyHabitWithAI(goal) {
+async function generateTinyHabitWithAI(goal, anchor = "") {
     const response = await fetch('/api/generate-habit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ goal }),
+        body: JSON.stringify({ goal, anchor }),
     });
 
     if (!response.ok) {
@@ -268,19 +281,21 @@ function generateTinyHabitLocal(goal) {
     } 
     
     if (goalLower.includes('운동') || goalLower.includes('팔굽혀펴기') || goalLower.includes('스쿼트')) {
-        category = "workout";
-        const anchor = "화장실에서 나온 후";
-        mvaTitle = `${anchor}, 팔굽혀펴기 1개 하기`;
-        levels = [
-            { "title": "운동복으로 갈아입기", "difficulty": 0 },
-            { "title": mvaTitle, "difficulty": 1 },
-            { "title": "팔굽혀펴기 5개 하기", "difficulty": 2 },
-            { "title": "스쿼트 10개 추가하기", "difficulty": 3 },
-            { "title": "5분 스트레칭 하기", "difficulty": 4 },
-            { "title": "15분 전신 운동하기", "difficulty": 5 },
-            { "title": "30분 루틴 완수하기", "difficulty": 6 }
-        ];
-        return { category, selectedAnchor: anchor, mva: { title: mvaTitle }, levels, celebrations };
+        const habitDesign = {
+            goalTitle: goal,
+            selectedAnchor: anchor || "매일 정해진 시간에",
+            mva: { title: `${goal.slice(0, 10)}... 아주 조금만 해보기` },
+            levels: [
+                { title: `${goal.slice(0, 10)}... 1분만 하기`, difficulty: 1 },
+                { title: `${goal.slice(0, 10)}... 5분 하기`, difficulty: 2 },
+                { title: `${goal.slice(0, 10)}... 15분 하기`, difficulty: 3 },
+                { title: `${goal.slice(0, 10)}... 30분 하기`, difficulty: 4 },
+                { title: `${goal.slice(0, 10)}... 45분 하기`, difficulty: 5 },
+                { title: goal, difficulty: 6 }
+            ],
+            celebrations: ["나이스!", "멋져요!", "오늘도 해냈군요!"]
+        };
+        return habitDesign;
     }
 
     if (goalLower.includes('물') || goalLower.includes('음용')) {

@@ -12,7 +12,7 @@ export async function onRequestPost(context) {
     };
 
     try {
-        const { goal } = await context.request.json();
+        const { goal, anchor } = await context.request.json();
 
         if (!goal || typeof goal !== 'string' || goal.trim().length === 0) {
             return new Response(JSON.stringify({ error: '목표를 입력해주세요.' }), {
@@ -43,9 +43,8 @@ export async function onRequestPost(context) {
    - 예시: '운동' -> "팔굽혀펴기 딱 1개 하기" / '독서' -> "책 표지 열고 딱 1문장 읽기"
 3. 즉각적 축하 (celebrations): 행동 직후 도파민을 분비시키는 즉각적이고 짧은 승리 세리머니 3가지를 제안하세요. 
    - 예시: "속으로 '나이스!' 외치기", "거울 보고 미소 짓기", "작게 박수 치기"
-4. 7단계 사다리 (levels): 점진적 성장 과정
-   - [난이도 0]: 행동을 위한 완벽한 환경 설정 및 준비 (예: 전날 밤 운동화 꺼내놓기, 책상 중앙에 책 올려두기)
-   - [난이도 1]: 위에서 정의한 MVA (초소형 행동 1회)
+4. 6단계 사다리 (levels): 점진적 성장 과정
+   - [난이도 1]: 위에서 정의한 MVA (초소형 행동 1회) - 시작점
    - [난이도 2~5]: 양이나 빈도를 아주 조금씩 늘려가는 구체적 과정
    - [난이도 6]: 사용자가 꿈꾸는 궁극적이고 완전한 형태의 목표 행동
 
@@ -56,7 +55,6 @@ export async function onRequestPost(context) {
     "selectedAnchor": "string (구체적인 기존 일상 루틴 기입)",
     "mva": { "title": "string (앵커 직후에 행할 30초 내외의 아주 작은 첫 행동)" },
     "levels": [
-        { "title": "난이도 0 (환경 설정/준비)", "difficulty": 0 },
         { "title": "난이도 1 (초소형 행동 MVA)", "difficulty": 1 },
         { "title": "난이도 2", "difficulty": 2 },
         { "title": "난이도 3", "difficulty": 3 },
@@ -68,7 +66,12 @@ export async function onRequestPost(context) {
 }
 `;
 
-        const userPrompt = `목표: "${goal.trim()}"\n위 원칙을 완벽하게 적용하여 순수한 JSON 구조로 응답하세요.`;
+
+        let userPrompt = `목표: "${goal.trim()}"\n`;
+        if (anchor && anchor.trim().length > 0) {
+            userPrompt += `사용자가 지정한 앵커 행위: "${anchor.trim()}"\n매우 중요: 반드시 이 앵커 행위를 첫 번째 행동의 트리거(selectedAnchor)로 사용하세요.\n`;
+        }
+        userPrompt += `위 원칙을 완벽하게 적용하여 순수한 JSON 구조로 응답하세요.`;
 
         const modelsToTry = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-pro'];
         let geminiRes = null;
@@ -83,7 +86,7 @@ export async function onRequestPost(context) {
                     body: JSON.stringify({
                         systemInstruction: { parts: [{ text: systemPrompt }] },
                         contents: [{ parts: [{ text: userPrompt }] }],
-                        generationConfig: { 
+                        generationConfig: {
                             responseMimeType: 'application/json',
                             maxOutputTokens: 2500 // 한국어 토큰 소모량을 고려하여 넉넉히 상향
                         },
@@ -96,7 +99,7 @@ export async function onRequestPost(context) {
             }
 
             lastErrText = await geminiRes.text();
-            
+
             // 모델을 찾을 수 없는 404 에러일 때만 다음 모델로 재시도, 권한 등 다른 에러면 루프 중단
             if (geminiRes.status !== 404) {
                 break;
@@ -105,13 +108,13 @@ export async function onRequestPost(context) {
 
         if (!geminiRes || !geminiRes.ok) {
             console.error('Gemini API error:', lastErrText);
-            
+
             let errorDetail = 'AI 요청에 실패했습니다.';
-            try { 
-                 const errObj = JSON.parse(lastErrText);
-                 if (errObj.error && errObj.error.message) errorDetail = errObj.error.message;
-            } catch(e) { 
-                 errorDetail = lastErrText;
+            try {
+                const errObj = JSON.parse(lastErrText);
+                if (errObj.error && errObj.error.message) errorDetail = errObj.error.message;
+            } catch (e) {
+                errorDetail = lastErrText;
             }
 
             return new Response(JSON.stringify({ error: `[Gemini 에러] ${errorDetail}` }), {
