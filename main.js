@@ -2,7 +2,7 @@
 
 // Firebase 설정 및 초기화
 const firebaseConfig = {
-    apiKey: "YOUR_FIREBASE_API_KEY",
+    apiKey: process.env.YOUR_FIREBASE_API_KEY,
     authDomain: "loginhabittracker-491f0.firebaseapp.com",
     projectId: "loginhabittracker-491f0",
     storageBucket: "loginhabittracker-491f0.firebasestorage.app",
