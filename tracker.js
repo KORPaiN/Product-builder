@@ -1,7 +1,7 @@
 // tracker.js - 습관 대시보드 관리 로직 (히트맵 & 커스터마이징 포함)
 
 const firebaseConfig = {
-    apiKey: "AIzaSyBauvvnnl0qfBUoiWwR4TWUqYA5hiaAftM",
+    apiKey: "YOUR_FIREBASE_API_KEY",
     authDomain: "loginhabittracker-491f0.firebaseapp.com",
     projectId: "loginhabittracker-491f0",
     storageBucket: "loginhabittracker-491f0.firebasestorage.app",
